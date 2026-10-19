@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ที่ปรึกษาและสอนทำโปรเจคไฟฟ้า ปวช. ปวส. และมินิโปรเจคปริญญาตรี">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>เฟสสาม โปรเจคไฟฟ้า</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: premium engineering-firm look, single deliberate dark theme. Full-bleed hero with live copper circuit canvas; 1200px rail; copper is the only accent (the conductor itself). */
+:root {
+  color-scheme: dark;
+  --bg: #0b1015;
+  --bg-2: #0f161c;
+  --surface: #141d25;
+  --surface-2: #1a252f;
+  --line: #24313c;
+  --ink: #eef1f3;
+  --muted: #8e9ca8;
+  --copper: #d4895a;
+  --copper-hi: #f3c29a;
+  --copper-lo: #7a4a2e;
+  --on-copper: #160d07;
+  --line-green: #06c755;
+  --f-display: "Anuphan", "Leelawadee UI", system-ui, sans-serif;
+  --f-body: "Anuphan", "Leelawadee UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.7; font-weight: 400; }
+.rail { max-width: 1200px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 600; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: 3px; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; color: var(--copper); }
+.eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--copper); }
+.copper-text { background: linear-gradient(100deg, var(--copper-hi), var(--copper) 55%, var(--copper-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--f-display); font-weight: 600; font-size: 1rem; padding: 14px 26px; border-radius: 2px; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: background .2s, border-color .2s, transform .2s; }
+.btn-copper { background: linear-gradient(135deg, var(--copper-hi), var(--copper)); color: var(--on-copper); }
+.btn-copper:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.btn-outline { border-color: var(--line); color: var(--ink); background: rgba(255,255,255,.02); }
+.btn-outline:hover { border-color: var(--copper); }
+.btn .arrow { transition: transform .2s; }
+.btn:hover .arrow { transform: translateX(3px); }
+
+.mock-note { background: var(--surface); color: var(--muted); font-size: .8rem; text-align: center; padding-block: 6px; border-bottom: 1px solid var(--line); }
+
+/* header */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(11,16,21,.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+header .rail { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand svg { width: 34px; height: 34px; flex: none; }
+.brand b { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; display: block; line-height: 1.1; }
+.brand small { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .14em; color: var(--muted); }
+nav { display: flex; gap: 28px; }
+nav a { text-decoration: none; font-size: .93rem; color: var(--muted); transition: color .2s; }
+nav a:hover { color: var(--ink); }
+header .btn { padding: 10px 18px; font-size: .92rem; }
+@media (max-width: 880px) { nav { display: none; } }
+
+/* hero */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+#circuit { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--bg) 0%, rgba(11,16,21,.92) 38%, rgba(11,16,21,.35) 75%, rgba(11,16,21,.6) 100%), linear-gradient(0deg, var(--bg) 0%, transparent 30%); pointer-events: none; }
+.hero .rail { position: relative; z-index: 1; padding-block: clamp(72px, 11vw, 140px) 72px; }
+.hero-copy { max-width: 720px; display: grid; gap: 26px; }
+.hero h1 { font-size: clamp(2.4rem, 6.4vw, 4.6rem); font-weight: 700; letter-spacing: -0.02em; }
+.hero .lede { font-size: clamp(1.05rem, 1.6vw, 1.22rem); color: var(--muted); max-width: 36em; font-weight: 300; }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 14px; }
+.stats { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); margin-top: 72px; }
+.stat { padding: 24px 24px 0 0; display: grid; gap: 2px; min-width: 0; }
+.stat + .stat { padding-left: 24px; border-left: 1px solid var(--line); }
+.stat b { font-family: var(--f-display); font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat b sup { font-size: .5em; color: var(--copper); margin-left: 2px; }
+.stat span { font-size: .88rem; color: var(--muted); }
+@media (max-width: 760px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat { padding: 20px 12px 0 0 !important; border-left: 0 !important; }
+}
+
+/* ticker */
+.ticker { border-bottom: 1px solid var(--line); background: var(--bg-2); overflow: hidden; }
+.ticker-track { display: flex; gap: 48px; padding-block: 16px; width: max-content; animation: tick 40s linear infinite; }
+.ticker span { font-family: var(--f-mono); font-size: .8rem; letter-spacing: .08em; color: var(--muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 48px; }
+.ticker span::after { content: "◆"; color: var(--copper-lo); font-size: .6rem; }
+@keyframes tick { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+section { padding-block: clamp(72px, 10vw, 120px); }
+.sec-head { display: grid; gap: 16px; margin-bottom: 48px; max-width: 760px; }
+.sec-head p { color: var(--muted); font-size: 1.05rem; font-weight: 300; }
+.split-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 48px; }
+.split-head .sec-head { margin: 0; }
+
+/* levels */
+.levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.level { background: var(--bg); padding: 32px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+.level.uni { background: linear-gradient(180deg, rgba(212,137,90,.08), transparent 60%), var(--bg); }
+.level-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.level-top b { font-family: var(--f-display); font-size: 1.9rem; font-weight: 600; }
+.level-top span { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .1em; color: var(--copper); }
+.level > p { color: var(--muted); font-weight: 300; font-size: .95rem; }
+.level ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .93rem; }
+.level li { padding-left: 16px; position: relative; }
+.level li::before { content: ""; position: absolute; left: 0; top: .7em; width: 6px; height: 1px; background: var(--copper); }
+.level dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; border-top: 1px solid var(--line); padding-top: 16px; font-size: .88rem; }
+.level dt { color: var(--muted); }
+.level dd { margin: 0; text-align: right; font-family: var(--f-mono); }
+.new-badge { font-family: var(--f-display); font-size: .7rem; font-weight: 600; background: linear-gradient(135deg, var(--copper-hi), var(--copper)); color: var(--on-copper); padding: 1px 8px; margin-left: 8px; vertical-align: middle; letter-spacing: 0; }
+@media (max-width: 900px) { .levels { grid-template-columns: 1fr; } }
+
+/* project explorer */
+.explorer { display: grid; grid-template-columns: 300px 1fr; border: 1px solid var(--line); background: var(--bg-2); }
+.tabs { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+.tab { all: unset; cursor: pointer; padding: 20px 24px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; transition: background .2s; position: relative; }
+.tab:last-child { border-bottom: 0; }
+.tab:hover { background: var(--surface); }
+.tab:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: -2px; }
+.tab .code { font-family: var(--f-mono); font-size: .72rem; color: var(--muted); grid-row: span 2; width: 52px; }
+.tab b { font-family: var(--f-display); font-weight: 500; font-size: 1.02rem; }
+.tab small { color: var(--muted); font-size: .8rem; }
+.tab[aria-selected="true"] { background: var(--surface); }
+.tab[aria-selected="true"]::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(var(--copper-hi), var(--copper)); }
+.tab[aria-selected="true"] .code { color: var(--copper); }
+.panel { display: grid; grid-template-columns: 1fr 1fr; min-width: 0; }
+.panel-art { position: relative; background: radial-gradient(120% 90% at 30% 20%, var(--surface-2), var(--bg) 70%); border-right: 1px solid var(--line); display: grid; place-items: center; padding: 32px; min-height: 360px; }
+.panel-art svg { width: min(100%, 320px); height: auto; }
+.panel-art .tagline { position: absolute; left: 20px; bottom: 16px; font-family: var(--f-mono); font-size: .72rem; color: var(--muted); letter-spacing: .08em; }
+.art { fill: none; stroke: var(--copper); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.art-dim { fill: none; stroke: var(--line); stroke-width: 1.2; }
+.art-fill { fill: var(--copper); }
+.panel-body { padding: 36px; display: grid; gap: 22px; align-content: start; min-width: 0; }
+.panel-body h3 { font-size: 1.7rem; font-weight: 600; }
+.panel-body > p { color: var(--muted); font-weight: 300; }
+.items { list-style: none; padding: 0; margin: 0; display: grid; }
+.items li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; font-size: .95rem; }
+.items li span:last-child { font-family: var(--f-mono); font-size: .8rem; color: var(--muted); white-space: nowrap; }
+.panel-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-top: 4px; }
+.panel-foot .from { display: grid; }
+.panel-foot .from small { color: var(--muted); font-size: .8rem; }
+.panel-foot .from b { font-family: var(--f-display); font-size: 1.6rem; font-weight: 600; }
+@media (max-width: 1040px) { .panel { grid-template-columns: 1fr; } .panel-art { border-right: 0; border-bottom: 1px solid var(--line); min-height: 240px; } }
+@media (max-width: 760px) {
+  .explorer { grid-template-columns: 1fr; }
+  .tabs { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); scrollbar-width: none; }
+  .tab { display: block; padding: 14px 18px; border-bottom: 0; border-right: 1px solid var(--line); white-space: nowrap; }
+  .tab .code, .tab small { display: none; }
+  .tab[aria-selected="true"]::before { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: 3px; }
+  .panel-body { padding: 24px; }
+}
+
+/* approach */
+.approach { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.approach > div { background: var(--bg); padding: 36px 32px; display: grid; gap: 14px; align-content: start; }
+.approach svg { width: 36px; height: 36px; }
+.approach h3 { font-size: 1.25rem; font-weight: 600; }
+.approach p { color: var(--muted); font-weight: 300; }
+@media (max-width: 860px) { .approach { grid-template-columns: 1fr; } }
+
+/* timeline */
+.timeline { display: grid; grid-template-columns: repeat(5, 1fr); list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 1px; background: linear-gradient(90deg, var(--copper), var(--line)); }
+.timeline li { position: relative; padding: 36px 24px 0 0; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.timeline li::before { content: ""; position: absolute; top: 0; left: 0; width: 15px; height: 15px; border-radius: 50%; background: var(--bg); border: 2px solid var(--copper); }
+.timeline li:first-child::before { background: var(--copper); box-shadow: 0 0 0 6px rgba(212,137,90,.15); }
+.timeline .when { font-family: var(--f-mono); font-size: .75rem; color: var(--copper); letter-spacing: .08em; }
+.timeline h3 { font-size: 1.1rem; font-weight: 600; }
+.timeline p { color: var(--muted); font-size: .92rem; font-weight: 300; }
+@media (max-width: 860px) {
+  .timeline { grid-template-columns: 1fr; gap: 28px; }
+  .timeline::before { left: 7px; right: auto; top: 0; bottom: 0; width: 1px; height: auto; background: linear-gradient(var(--copper), var(--line)); }
+  .timeline li { padding: 0 0 0 40px; }
+}
+
+/* packages */
+.pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+@media (max-width: 960px) { .pkgs { grid-template-columns: 1fr; max-width: 520px; } }
+.pkg { background: var(--bg-2); border: 1px solid var(--line); padding: 36px 32px; display: flex; flex-direction: column; gap: 20px; position: relative; }
+.pkg.featured { background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(160deg, var(--copper-hi), var(--copper-lo) 60%, var(--line)) border-box; border: 1px solid transparent; }
+.pkg .badge { position: absolute; top: -12px; left: 32px; background: linear-gradient(135deg, var(--copper-hi), var(--copper)); color: var(--on-copper); font-size: .74rem; font-weight: 600; padding: 3px 12px; font-family: var(--f-display); }
+.pkg .tier { font-family: var(--f-mono); font-size: .74rem; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.pkg h3 { font-size: 1.45rem; font-weight: 600; }
+.pkg .desc { color: var(--muted); font-size: .93rem; font-weight: 300; }
+.pkg .price { display: flex; align-items: baseline; gap: 8px; border-block: 1px solid var(--line); padding-block: 18px; }
+.pkg .price b { font-family: var(--f-display); font-size: 2.4rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pkg .price small { color: var(--muted); font-size: .85rem; }
+.pkg ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: .95rem; flex: 1; }
+.pkg li { display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: start; }
+.pkg li svg { width: 18px; height: 18px; margin-top: 4px; }
+.pkg li.off { color: #5d6b77; }
+
+/* institutions */
+.inst { display: grid; grid-template-columns: 1.1fr .9fr; gap: 0; border: 1px solid var(--line); background: var(--bg-2); }
+.inst-copy { padding: clamp(32px, 5vw, 56px); display: grid; gap: 20px; align-content: center; }
+.inst-copy p { color: var(--muted); font-weight: 300; }
+.inst-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin: 8px 0 0; padding: 0; list-style: none; font-size: .95rem; }
+.inst-list li { padding-left: 16px; border-left: 1px solid var(--copper); }
+.inst-art { border-left: 1px solid var(--line); background: repeating-linear-gradient(0deg, transparent 0 39px, rgba(255,255,255,.025) 39px 40px), repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,.025) 39px 40px), radial-gradient(80% 80% at 70% 30%, var(--surface-2), var(--bg)); display: grid; place-items: center; padding: 32px; min-height: 320px; }
+.inst-art svg { width: min(100%, 340px); height: auto; }
+@media (max-width: 860px) { .inst { grid-template-columns: 1fr; } .inst-art { border-left: 0; border-top: 1px solid var(--line); } .inst-list { grid-template-columns: 1fr; } }
+
+/* works bento */
+.bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 220px; gap: 16px; }
+.work { position: relative; overflow: hidden; border: 1px solid var(--line); background: radial-gradient(100% 100% at 80% 0%, var(--surface-2), var(--bg-2) 70%); display: flex; flex-direction: column; justify-content: flex-end; padding: 22px; min-width: 0; }
+.work.big { grid-column: span 2; grid-row: span 2; }
+.work.wide { grid-column: span 2; }
+.work svg.bg { position: absolute; right: -10px; top: -10px; width: 70%; max-width: 360px; height: auto; opacity: .9; }
+.work.big svg.bg { width: 80%; right: 0; top: 10px; }
+.work .meta { position: relative; display: grid; gap: 4px; }
+.work .meta small { font-family: var(--f-mono); font-size: .72rem; color: var(--copper); letter-spacing: .08em; }
+.work .meta b { font-family: var(--f-display); font-size: 1.15rem; font-weight: 600; }
+.work.big .meta b { font-size: 1.6rem; }
+.work .meta span { color: var(--muted); font-size: .86rem; }
+.work .photo-tag { position: absolute; top: 14px; left: 16px; font-size: .7rem; color: var(--muted); border: 1px dashed var(--line); padding: 1px 8px; }
+@media (max-width: 960px) { .bento { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .bento { grid-template-columns: 1fr; grid-auto-rows: 200px; } .work.big, .work.wide { grid-column: auto; grid-row: auto; } }
+
+/* testimonials */
+.quotes { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 20px; }
+.quote { background: var(--bg-2); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+.quote:first-child { background: var(--surface); }
+.quote p { font-size: 1.05rem; font-weight: 300; }
+.quote:first-child p { font-family: var(--f-display); font-size: 1.4rem; font-weight: 500; line-height: 1.45; }
+.quote .mark { font-family: var(--f-display); font-size: 3rem; line-height: .6; color: var(--copper); }
+.who { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--copper), var(--copper-lo)); display: grid; place-items: center; font-family: var(--f-display); font-weight: 600; color: var(--on-copper); flex: none; }
+.who b { display: block; font-size: .95rem; font-weight: 500; }
+.who small { color: var(--muted); font-size: .8rem; }
+@media (max-width: 960px) { .quotes { grid-template-columns: 1fr; } }
+
+/* faq */
+.faq-wrap { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; }
+@media (max-width: 860px) { .faq-wrap { grid-template-columns: 1fr; } }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq details:first-child { border-top: 1px solid var(--line); }
+.faq summary { cursor: pointer; padding: 22px 0; list-style: none; display: flex; justify-content: space-between; gap: 20px; font-family: var(--f-display); font-weight: 500; font-size: 1.1rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; width: 12px; height: 12px; flex: none; margin-top: 8px; border-right: 1.5px solid var(--copper); border-bottom: 1.5px solid var(--copper); transform: rotate(45deg); transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(-135deg); }
+.faq details p { padding-bottom: 22px; color: var(--muted); font-weight: 300; max-width: 62ch; }
+
+/* cta */
+.cta { position: relative; overflow: hidden; border-top: 1px solid var(--line); background: radial-gradient(60% 120% at 85% 50%, rgba(212,137,90,.18), transparent 70%), var(--bg-2); }
+.cta .rail { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; align-items: center; }
+@media (max-width: 900px) { .cta .rail { grid-template-columns: 1fr; } }
+.cta h2 { font-size: clamp(2rem, 4.6vw, 3.4rem); }
+.cta p.lede { color: var(--muted); margin-top: 16px; font-weight: 300; font-size: 1.08rem; }
+.contact-card { background: rgba(20,29,37,.8); border: 1px solid var(--line); padding: 28px; display: grid; gap: 4px; backdrop-filter: blur(6px); }
+.crow { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.crow span { color: var(--muted); font-size: .86rem; }
+.crow b { font-family: var(--f-mono); font-weight: 500; user-select: all; }
+.copy { all: unset; cursor: pointer; font-size: .8rem; color: var(--copper-hi); border-bottom: 1px solid var(--copper-lo); }
+.copy:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: 2px; }
+.contact-card .btn { margin-top: 18px; background: var(--line-green); color: #fff; }
+
+footer { border-top: 1px solid var(--line); padding-block: 32px 100px; color: var(--muted); font-size: .84rem; }
+footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+
+.fab { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 40; background: var(--line-green); color: #fff; border-radius: 999px; padding: 13px 20px; font-family: var(--f-display); font-weight: 600; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,.45); display: inline-flex; align-items: center; gap: 8px; }
+.fab i { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,.7); animation: ping 2s infinite; }
+@keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+@media (prefers-reduced-motion: reduce) { .fab i { animation: none; } }
+</style>
+</head>
+<body>
+
+<div class="mock-note">หน้าตัวอย่าง (mockup) · ชื่อร้าน ราคา รีวิว ตัวเลข และช่องทางติดต่อเป็นข้อมูลสมมติ</div>
+
+<header>
+  <div class="rail">
+    <a class="brand" href="#top" aria-label="เฟสสาม หน้าแรก">
+      <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="2" fill="none" stroke="var(--copper)" stroke-width="1.5"/><path d="M9 11h16M9 17h16M9 23h16" stroke="var(--copper)" stroke-width="1.5"/><circle cx="13" cy="11" r="2" fill="var(--copper-hi)"/><circle cx="21" cy="17" r="2" fill="var(--copper-hi)"/><circle cx="16" cy="23" r="2" fill="var(--copper-hi)"/></svg>
+      <span><b>เฟสสาม</b><small>ELECTRICAL PROJECT STUDIO</small></span>
+    </a>
+    <nav aria-label="เมนูหลัก">
+      <a href="#levels">ระดับ</a>
+      <a href="#projects">โปรเจค</a>
+      <a href="#process">ขั้นตอน</a>
+      <a href="#packages">แพ็กเกจ</a>
+      <a href="#institutions">สำหรับวิทยาลัย</a>
+      <a href="#works">ผลงาน</a>
+    </nav>
+    <a class="btn btn-copper" href="#contact">ปรึกษาฟรี</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <canvas id="circuit" aria-hidden="true"></canvas>
+    <div class="rail">
+      <div class="hero-copy">
+        <span class="eyebrow">สตูดิโอโปรเจคไฟฟ้า ปวช. · ปวส. · ปริญญาตรี</span>
+        <h1>งานไฟฟ้าระดับมืออาชีพ<br><span class="copper-text">ในมือคุณเอง</span></h1>
+        <p class="lede">เราออกแบบ จัดอุปกรณ์ และสอนทำโปรเจคไฟฟ้าให้นักศึกษาอาชีวะและนักศึกษาวิศวกรรมไฟฟ้า ด้วยมาตรฐานเดียวกับงานติดตั้งจริง คุณได้ชิ้นงานที่ทำงานได้ และเข้าใจทุกจุดที่กรรมการจะถาม</p>
+        <div class="ctas">
+          <a class="btn btn-copper" href="#contact">เริ่มปรึกษาหัวข้อ <span class="arrow">→</span></a>
+          <a class="btn btn-outline" href="#projects">ดูหมวดโปรเจค</a>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>120<sup>+</sup></b><span>โปรเจคที่ส่งมอบ</span></div>
+        <div class="stat"><b>45</b><span>สถาบันทั่วประเทศ</span></div>
+        <div class="stat"><b>98<sup>%</sup></b><span>สอบโครงงานผ่าน</span></div>
+        <div class="stat"><b>30<sup>วัน</sup></b><span>รับประกันการทำงาน</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>SOLAR PV ON-GRID / OFF-GRID</span><span>PLC · MITSUBISHI / SIEMENS</span><span>ESP32 · IoT DASHBOARD</span><span>VFD MOTOR CONTROL</span><span>STAR–DELTA STARTER</span><span>RCD 30mA</span><span>EV CONVERSION 48V</span><span>SMART METER kWh</span>
+      <span>SOLAR PV ON-GRID / OFF-GRID</span><span>PLC · MITSUBISHI / SIEMENS</span><span>ESP32 · IoT DASHBOARD</span><span>VFD MOTOR CONTROL</span><span>STAR–DELTA STARTER</span><span>RCD 30mA</span><span>EV CONVERSION 48V</span><span>SMART METER kWh</span>
+    </div>
+  </div>
+
+  <section id="levels">
+    <div class="rail">
+      <div class="sec-head">
+        <span class="eyebrow">ระดับที่รับงาน</span>
+        <h2>ตั้งแต่ ปวช. จนถึงมินิโปรเจคปริญญาตรี</h2>
+        <p>แต่ละระดับมีเกณฑ์ที่กรรมการดูต่างกัน เราปรับความลึกของงานและเอกสารให้ตรงกับระดับของคุณ</p>
+      </div>
+      <div class="levels">
+        <div class="level">
+          <div class="level-top"><b>ปวช.</b><span>VOC. CERT.</span></div>
+          <p>เน้นชิ้นงานที่ต่อวงจรได้ถูกต้อง ปลอดภัย และสาธิตการทำงานได้ชัด</p>
+          <ul><li>ชุดฝึกติดตั้งไฟฟ้าและตู้ควบคุม</li><li>วงจรควบคุมมอเตอร์พื้นฐาน</li><li>โซลาร์เซลล์ขนาดเล็ก</li></ul>
+          <dl><dt>ระยะเวลา</dt><dd>1–2 สัปดาห์</dd><dt>ราคาเริ่มต้น</dt><dd>฿1,500</dd></dl>
+        </div>
+        <div class="level">
+          <div class="level-top"><b>ปวส.</b><span>HIGH VOC. DIPLOMA</span></div>
+          <p>ต้องมีระบบควบคุมและผลการทดลองเป็นตัวเลข เช่น ประสิทธิภาพหรือพลังงานที่ประหยัดได้</p>
+          <ul><li>PLC, อินเวอร์เตอร์ และเซนเซอร์</li><li>ระบบ IoT ที่ส่งข้อมูลขึ้นแอป</li><li>สิ่งประดิษฐ์สำหรับส่งประกวด</li></ul>
+          <dl><dt>ระยะเวลา</dt><dd>2–4 สัปดาห์</dd><dt>ราคาเริ่มต้น</dt><dd>฿2,500</dd></dl>
+        </div>
+        <div class="level uni">
+          <div class="level-top"><b>ปริญญาตรี<span class="new-badge">ใหม่</span></b><span>B.ENG. MINI PROJECT</span></div>
+          <p>มินิโปรเจครายวิชาและโครงงานวิศวกรรม เน้นการออกแบบ คำนวณ จำลอง และเทียบผลกับทฤษฎี</p>
+          <ul><li>วงจรแปลงผันกำลัง Buck / Boost / อินเวอร์เตอร์</li><li>จำลองด้วย MATLAB/Simulink หรือ PSIM</li><li>ระบบควบคุม PID และไมโครกริดขนาดเล็ก</li></ul>
+          <dl><dt>ระยะเวลา</dt><dd>3–6 สัปดาห์</dd><dt>ราคาเริ่มต้น</dt><dd>฿4,500</dd></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" style="padding-top:0">
+    <div class="rail">
+      <div class="sec-head">
+        <span class="eyebrow">หมวดโปรเจค</span>
+        <h2>เจ็ดสายงาน ครอบคลุมทุกแผนกและสาขาไฟฟ้า</h2>
+        <p>เลือกหมวดเพื่อดูตัวอย่างหัวข้อ ระดับที่เหมาะ และราคาเริ่มต้น เราปรับขนาดงานให้พอดีกับงบและเวลาที่มี</p>
+      </div>
+
+      <div class="explorer">
+        <div class="tabs" role="tablist" aria-label="หมวดโปรเจค">
+          <button class="tab" role="tab" id="t-pv" aria-controls="p-pv" aria-selected="true"><span class="code">PV-01</span><b>พลังงานแสงอาทิตย์</b><small>ปวช. · ปวส. · ป.ตรี</small></button>
+          <button class="tab" role="tab" id="t-iot" aria-controls="p-iot" aria-selected="false" tabindex="-1"><span class="code">IOT-02</span><b>IoT และสมาร์ตโฮม</b><small>ปวส. · ป.ตรี</small></button>
+          <button class="tab" role="tab" id="t-mc" aria-controls="p-mc" aria-selected="false" tabindex="-1"><span class="code">MC-03</span><b>มอเตอร์และ PLC</b><small>ปวช. · ปวส. · ป.ตรี</small></button>
+          <button class="tab" role="tab" id="t-tr" aria-controls="p-tr" aria-selected="false" tabindex="-1"><span class="code">TR-04</span><b>ชุดฝึกการสอน</b><small>ปวช.</small></button>
+          <button class="tab" role="tab" id="t-ev" aria-controls="p-ev" aria-selected="false" tabindex="-1"><span class="code">EV-05</span><b>ยานยนต์ไฟฟ้า</b><small>ปวส. · ป.ตรี</small></button>
+          <button class="tab" role="tab" id="t-sf" aria-controls="p-sf" aria-selected="false" tabindex="-1"><span class="code">SF-06</span><b>ความปลอดภัยและพลังงาน</b><small>ปวช. · ปวส.</small></button>
+          <button class="tab" role="tab" id="t-pe" aria-controls="p-pe" aria-selected="false" tabindex="-1"><span class="code">PE-07</span><b>อิเล็กทรอนิกส์กำลังและจำลอง</b><small>ป.ตรี</small></button>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-pv" aria-labelledby="t-pv">
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <circle cx="240" cy="44" r="18" class="art"/><path class="art" d="M240 14v-8M240 82v-8M210 44h-8M278 44h-8M219 23l-6-6M267 71l-6-6M261 23l6-6"/>
+              <path class="art" d="M40 150 L90 80 L210 80 L170 150 Z"/>
+              <path class="art-dim" d="M70 115h120M55 132h120M80 80l-20 70M120 80l-20 70M160 80l-20 70"/>
+              <path class="art" d="M120 150v40M90 190h60"/>
+              <rect x="200" y="160" width="60" height="40" rx="2" class="art"/><path class="art" d="M212 172h12M218 166v12M236 172h12"/>
+              <path class="art" d="M150 190 H200" stroke-dasharray="4 6"/>
+            </svg>
+            <span class="tagline">PV ARRAY → CHARGE CTRL → BATTERY</span>
+          </div>
+          <div class="panel-body">
+            <h3>พลังงานแสงอาทิตย์</h3>
+            <p>หมวดยอดนิยมอันดับหนึ่ง วัดผลเป็นตัวเลขได้ชัด ทั้งกำลังผลิต ประสิทธิภาพ และค่าไฟที่ประหยัดได้</p>
+            <ul class="items">
+              <li><span>ปั๊มน้ำโซลาร์เพื่อการเกษตร</span><span>600 W</span></li>
+              <li><span>Solar Tracker หมุนตามดวงอาทิตย์</span><span>2 แกน</span></li>
+              <li><span>ชุดสาธิต On-grid / Off-grid / Hybrid</span><span>ชุดฝึก</span></li>
+              <li><span>ตู้อบแห้งพลังงานแสงอาทิตย์</span><span>DC 12 V</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿2,500</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-iot" aria-labelledby="t-iot" hidden>
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <rect x="110" y="70" width="80" height="80" rx="4" class="art"/><rect x="130" y="90" width="40" height="40" class="art-dim"/>
+              <path class="art" d="M120 70v-14M140 70v-14M160 70v-14M180 70v-14M120 150v14M140 150v14M160 150v14M180 150v14M110 90h-14M110 110h-14M110 130h-14M190 90h14M190 110h14M190 130h14"/>
+              <path class="art" d="M232 60a24 24 0 0 1 24 24M232 44a40 40 0 0 1 40 40" /><circle cx="232" cy="84" r="4" class="art-fill"/>
+              <rect x="30" y="150" width="46" height="62" rx="6" class="art"/><path class="art-dim" d="M38 164h30M38 176h22M38 188h26"/>
+              <path class="art" d="M76 180 C 100 180, 100 150, 120 150" stroke-dasharray="4 6"/>
+            </svg>
+            <span class="tagline">ESP32 → WI-FI → DASHBOARD / LINE</span>
+          </div>
+          <div class="panel-body">
+            <h3>IoT และสมาร์ตโฮม</h3>
+            <p>ต่อเซนเซอร์เข้ากับไมโครคอนโทรลเลอร์ ส่งข้อมูลขึ้นแอป และสั่งงานจากมือถือ เหมาะกับ ปวส. ที่อยากโชว์ทั้งวงจรและโค้ด</p>
+            <ul class="items">
+              <li><span>มิเตอร์วัดหน่วยไฟ ดูผ่านมือถือ</span><span>kWh</span></li>
+              <li><span>รดน้ำอัตโนมัติตามความชื้นดิน</span><span>ESP32</span></li>
+              <li><span>แจ้งเตือนไฟดับ ไฟเกิน ผ่าน LINE</span><span>PZEM-004T</span></li>
+              <li><span>ฟาร์มเห็ดควบคุมอุณหภูมิและความชื้น</span><span>DHT22</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿1,800</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-mc" aria-labelledby="t-mc" hidden>
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <circle cx="110" cy="120" r="54" class="art"/><circle cx="110" cy="120" r="34" class="art-dim"/><text x="110" y="128" text-anchor="middle" fill="var(--copper)" font-family="IBM Plex Mono, monospace" font-size="22">M</text>
+              <text x="110" y="150" text-anchor="middle" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">3~</text>
+              <path class="art" d="M80 66 V30 M110 66 V30 M140 66 V30"/>
+              <rect x="200" y="60" width="70" height="110" rx="2" class="art"/><path class="art-dim" d="M210 80h50M210 96h50M210 112h50"/>
+              <circle cx="222" cy="145" r="7" class="art"/><circle cx="248" cy="145" r="7" class="art-fill"/>
+              <path class="art" d="M164 120 H200" stroke-dasharray="4 6"/>
+            </svg>
+            <span class="tagline">PLC / VFD → 3-PHASE INDUCTION MOTOR</span>
+          </div>
+          <div class="panel-body">
+            <h3>มอเตอร์และ PLC</h3>
+            <p>หัวใจของสายไฟฟ้ากำลัง ใช้อุปกรณ์เกรดเดียวกับในโรงงาน ต่อยอดไปฝึกงานและทำงานได้ทันที</p>
+            <ul class="items">
+              <li><span>ชุดฝึกสตาร์-เดลต้า และกลับทางหมุน</span><span>3 เฟส</span></li>
+              <li><span>สายพานคัดแยกสีหรือขนาดด้วย PLC</span><span>Ladder</span></li>
+              <li><span>ปรับความเร็วมอเตอร์ด้วยอินเวอร์เตอร์</span><span>VFD</span></li>
+              <li><span>เครื่องปอกมะพร้าว / สับหญ้าไฟฟ้า</span><span>1 HP</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿3,500</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-tr" aria-labelledby="t-tr" hidden>
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <rect x="50" y="30" width="200" height="160" rx="3" class="art"/>
+              <path class="art-dim" d="M50 70h200M50 150h200"/>
+              <rect x="70" y="42" width="14" height="20" class="art"/><rect x="92" y="42" width="14" height="20" class="art"/><rect x="114" y="42" width="14" height="20" class="art"/><rect x="136" y="42" width="14" height="20" class="art"/><rect x="190" y="42" width="40" height="20" class="art-fill" opacity=".8"/>
+              <path class="art" d="M77 62 V100 H160 M99 62 V115 H180 M121 62 V130 H200"/>
+              <circle cx="80" cy="170" r="7" class="art"/><circle cx="110" cy="170" r="7" class="art"/><circle cx="140" cy="170" r="7" class="art"/><rect x="180" y="162" width="50" height="16" class="art"/>
+            </svg>
+            <span class="tagline">CONSUMER UNIT · RCBO · TRAINER BOARD</span>
+          </div>
+          <div class="panel-body">
+            <h3>ชุดฝึกการเรียนการสอน</h3>
+            <p>ชิ้นงานที่ใช้ต่อในแผนกได้หลายรุ่น อาจารย์ชอบ และเหมาะกับ ปวช. ที่เพิ่งเริ่มงานติดตั้ง</p>
+            <ul class="items">
+              <li><span>ชุดฝึกติดตั้งไฟฟ้าในอาคารพร้อมตู้ควบคุม</span><span>1 เฟส</span></li>
+              <li><span>ชุดสาธิตเครื่องตัดไฟรั่ว</span><span>RCD 30 mA</span></li>
+              <li><span>ชุดฝึกหม้อแปลงไฟฟ้า</span><span>220/24 V</span></li>
+              <li><span>ชุดฝึกเซนเซอร์อุตสาหกรรม</span><span>NPN/PNP</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿2,200</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-ev" aria-labelledby="t-ev" hidden>
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <circle cx="70" cy="150" r="40" class="art"/><circle cx="230" cy="150" r="40" class="art"/><circle cx="70" cy="150" r="8" class="art-fill"/><circle cx="230" cy="150" r="8" class="art"/>
+              <path class="art" d="M70 150 L120 90 H190 L230 150 M120 90 L150 150 H70 M190 90 L200 60 H220 M110 80 H135"/>
+              <rect x="126" y="100" width="44" height="24" rx="2" class="art-fill" opacity=".85"/>
+              <path class="art-dim" d="M40 205 H260"/>
+            </svg>
+            <span class="tagline">48 V LiFePO4 · HUB MOTOR · BMS</span>
+          </div>
+          <div class="panel-body">
+            <h3>ยานยนต์ไฟฟ้า</h3>
+            <p>หมวดที่มาแรงที่สุดในเวทีประกวดช่วงหลัง ได้ทั้งงานกำลัง งานควบคุม และระบบแบตเตอรี่ในชิ้นเดียว</p>
+            <ul class="items">
+              <li><span>ดัดแปลงจักรยานเป็นไฟฟ้า</span><span>48 V 500 W</span></li>
+              <li><span>รถไฟฟ้าขนาดเล็กสำหรับชุมชน</span><span>BLDC</span></li>
+              <li><span>สถานีชาร์จต้นแบบพร้อมมิเตอร์</span><span>AC 220 V</span></li>
+              <li><span>เรือไฟฟ้าพลังงานแสงอาทิตย์</span><span>PV + Battery</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿6,500</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-sf" aria-labelledby="t-sf" hidden>
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <path class="art" d="M150 28 L220 56 V112 C220 158 188 186 150 198 C112 186 80 158 80 112 V56 Z"/>
+              <path class="art-dim" d="M150 48 L202 68 V112 C202 146 180 168 150 178 C120 168 98 146 98 112 V68 Z"/>
+              <path class="art-fill" d="M160 70 L128 122 H150 L140 160 L176 104 H152 Z"/>
+            </svg>
+            <span class="tagline">PIR · SMOKE DETECT · SURGE PROTECTION</span>
+          </div>
+          <div class="panel-body">
+            <h3>ความปลอดภัยและพลังงาน</h3>
+            <p>แก้ปัญหาใกล้ตัวในบ้าน หอพัก และโรงเรียน เขียนผลเป็นเปอร์เซ็นต์ประหยัดไฟได้ ช่วยได้คะแนนในการประกวด</p>
+            <ul class="items">
+              <li><span>ตัดไฟอัตโนมัติเมื่อไม่มีคนในห้อง</span><span>PIR</span></li>
+              <li><span>ตรวจจับควันแล้วตัดไฟและแจ้งเตือน</span><span>MQ-2</span></li>
+              <li><span>ระบบประหยัดไฟปั๊มน้ำและแอร์</span><span>−20%</span></li>
+              <li><span>แผงป้องกันไฟกระชาก</span><span>SPD</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿1,500</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="p-pe" aria-labelledby="t-pe" hidden>
+          <div class="panel-art">
+            <svg viewBox="0 0 300 220" aria-hidden="true">
+              <path class="art-dim" d="M30 190 H280 M30 190 V30"/>
+              <path class="art" d="M30 170 C 60 170, 70 60, 100 60 S 130 170, 160 170 S 190 60, 220 60 S 250 170, 280 170" opacity=".45"/>
+              <path class="art" d="M30 120 H52 V60 H74 V180 H96 V60 H118 V180 H140 V60 H162 V180 H184 V60 H206 V180 H228 V60 H250 V120 H280"/>
+              <text x="36" y="44" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">PWM · f_sw = 20 kHz</text>
+              <rect x="196" y="22" width="84" height="22" class="art-fill" opacity=".85"/>
+              <text x="238" y="37" text-anchor="middle" fill="var(--on-copper)" font-family="IBM Plex Mono, monospace" font-size="10">η = 92.4%</text>
+            </svg>
+            <span class="tagline">BUCK / BOOST · MATLAB / SIMULINK · PID</span>
+          </div>
+          <div class="panel-body">
+            <h3>อิเล็กทรอนิกส์กำลังและจำลอง</h3>
+            <p>หมวดสำหรับมินิโปรเจคปริญญาตรี ออกแบบวงจรจากสมการ จำลองก่อนสร้างจริง แล้วเทียบผลวัดกับผลจำลองเพื่อเขียนวิเคราะห์</p>
+            <ul class="items">
+              <li><span>วงจร Buck / Boost Converter พร้อมควบคุมแบบป้อนกลับ</span><span>PWM</span></li>
+              <li><span>อินเวอร์เตอร์ 1 เฟสแบบ SPWM</span><span>50 Hz</span></li>
+              <li><span>MPPT สำหรับแผงโซลาร์ เทียบ P&amp;O กับ InC</span><span>Simulink</span></li>
+              <li><span>ควบคุมความเร็วมอเตอร์ DC ด้วย PID</span><span>STM32</span></li>
+            </ul>
+            <div class="panel-foot"><div class="from"><small>ราคาเริ่มต้น</small><b>฿4,500</b></div><a class="btn btn-outline" href="#contact">สอบถามหมวดนี้ <span class="arrow">→</span></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="rail">
+      <div class="approach">
+        <div>
+          <svg viewBox="0 0 36 36" aria-hidden="true"><rect x="3" y="3" width="30" height="30" class="art"/><path class="art" d="M9 12h18M9 18h12M9 24h15"/></svg>
+          <h3>ออกแบบตามมาตรฐาน</h3>
+          <p>ทุกงานเริ่มจากแบบวงจรและรายการอุปกรณ์ที่คำนวณพิกัดจริง ใช้สายและเบรกเกอร์ขนาดถูกต้อง ปลอดภัยตอนสาธิต</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="13" r="7" class="art"/><path class="art" d="M5 33c2-7 7-10 13-10s11 3 13 10"/></svg>
+          <h3>สอนจนอธิบายเองได้</h3>
+          <p>เราไม่ส่งกล่องแล้วจบ ทุกแพ็กเกจมีคู่มืออธิบายการทำงานทีละส่วน และแพ็กเกจสูงมีซ้อมตอบคำถามกรรมการ</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 36 36" aria-hidden="true"><path class="art" d="M18 3 L31 8 V18 C31 26 25 31 18 33 C11 31 5 26 5 18 V8 Z"/><path class="art" d="M12 18l4 4 8-8"/></svg>
+          <h3>ทดสอบก่อนส่งมอบ</h3>
+          <p>วัดแรงดัน กระแส และบันทึกผลจริงให้ใส่เล่มรายงานได้ทันที พร้อมรับประกันการทำงาน 30 วัน</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" style="background:var(--bg-2);border-block:1px solid var(--line)">
+    <div class="rail">
+      <div class="sec-head">
+        <span class="eyebrow">ขั้นตอนการทำงาน</span>
+        <h2>จากหัวข้อถึงวันสอบ ในสี่สัปดาห์</h2>
+        <p>ระยะเวลาโดยประมาณสำหรับงานขนาดกลาง งานเล็กเสร็จเร็วกว่านี้ และเราส่งรูปความคืบหน้าทางไลน์ทุกสัปดาห์</p>
+      </div>
+      <ol class="timeline">
+        <li><span class="when">วันที่ 1</span><h3>ปรึกษาฟรี</h3><p>บอกระดับชั้น งบ และกำหนดส่ง รับข้อเสนอหัวข้อที่ทำทัน 2–3 แบบ</p></li>
+        <li><span class="when">วันที่ 2–3</span><h3>สรุปขอบเขต</h3><p>ได้แบบวงจร รายการอุปกรณ์ และราคาที่แน่นอน มัดจำ 50%</p></li>
+        <li><span class="when">สัปดาห์ 1–2</span><h3>ประกอบและสอน</h3><p>สั่งอุปกรณ์ สอนต่อวงจรและเขียนโปรแกรมไปพร้อมกัน</p></li>
+        <li><span class="when">สัปดาห์ 3</span><h3>ทดสอบจริง</h3><p>วัดค่า เก็บผลการทดลอง และปรับจูนจนทำงานเสถียร</p></li>
+        <li><span class="when">สัปดาห์ 4</span><h3>ส่งมอบและซ้อมสอบ</h3><p>ส่งมอบชิ้นงาน คู่มือ และซ้อมนำเสนอก่อนวันจริง</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="packages">
+    <div class="rail">
+      <div class="sec-head">
+        <span class="eyebrow">แพ็กเกจ</span>
+        <h2>เลือกระดับการดูแลที่เหมาะกับคุณ</h2>
+        <p>ราคาเริ่มต้นสำหรับงานขนาดเล็ก ราคาจริงขึ้นกับหมวดและขนาดงาน แจ้งชัดเจนก่อนเริ่มทุกครั้ง</p>
+      </div>
+      <div class="pkgs">
+        <div class="pkg">
+          <span class="tier">Kit</span>
+          <h3>ชุดคิท + คู่มือ</h3>
+          <p class="desc">สำหรับคนที่มีพื้นฐาน อยากได้อุปกรณ์ครบและแบบที่ถูกต้อง</p>
+          <div class="price"><b>฿1,500</b><small>เริ่มต้น</small></div>
+          <ul>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>อุปกรณ์ครบตามแบบ</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>แบบวงจรและคู่มือประกอบ</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ตอบคำถามทางไลน์</li>
+            <li class="off"><svg viewBox="0 0 18 18"><path class="art-dim" d="M5 9h8"/></svg>สอนทำแบบตัวต่อตัว</li>
+            <li class="off"><svg viewBox="0 0 18 18"><path class="art-dim" d="M5 9h8"/></svg>ซ้อมสอบโครงงาน</li>
+          </ul>
+          <a class="btn btn-outline" href="#contact">เลือกแพ็กเกจนี้</a>
+        </div>
+        <div class="pkg featured">
+          <span class="badge">เลือกมากที่สุด</span>
+          <span class="tier">Build</span>
+          <h3>คิท + สอนทำ</h3>
+          <p class="desc">ทำไปพร้อมผู้เชี่ยวชาญ เข้าใจทุกขั้นตอน ได้ทั้งงานและความรู้</p>
+          <div class="price"><b>฿3,500</b><small>เริ่มต้น</small></div>
+          <ul>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ทุกอย่างในแพ็กเกจ Kit</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>สอนทำ 3 ครั้ง ออนไลน์หรือที่สตูดิโอ</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ช่วยแก้วงจรและโค้ดที่ติดปัญหา</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ตรวจงานก่อนส่งอาจารย์</li>
+            <li class="off"><svg viewBox="0 0 18 18"><path class="art-dim" d="M5 9h8"/></svg>ซ้อมสอบโครงงาน</li>
+          </ul>
+          <a class="btn btn-copper" href="#contact">เลือกแพ็กเกจนี้ <span class="arrow">→</span></a>
+        </div>
+        <div class="pkg">
+          <span class="tier">Complete</span>
+          <h3>ครบวงจร + ติวสอบ</h3>
+          <p class="desc">ดูแลจนถึงวันนำเสนอ เหมาะกับงานประกวดหรือเวลาเหลือน้อย</p>
+          <div class="price"><b>฿6,000</b><small>เริ่มต้น</small></div>
+          <ul>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ทุกอย่างในแพ็กเกจ Build</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ช่วยเรียบเรียงเล่มและสไลด์</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ซ้อมตอบคำถามกรรมการ 2 รอบ</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>รับประกันการทำงาน 30 วัน</li>
+            <li><svg viewBox="0 0 18 18"><path class="art" d="M3 9l4 4 8-8"/></svg>ช่วยเตรียมส่งประกวดสิ่งประดิษฐ์</li>
+          </ul>
+          <a class="btn btn-outline" href="#contact">เลือกแพ็กเกจนี้</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="institutions" style="padding-top:0">
+    <div class="rail">
+      <div class="inst">
+        <div class="inst-copy">
+          <span class="eyebrow">สำหรับวิทยาลัยและแผนกวิชา</span>
+          <h2>ชุดฝึกครุภัณฑ์ ผลิตตามหลักสูตร</h2>
+          <p>เราผลิตชุดฝึกและชุดสาธิตสำหรับแผนกไฟฟ้ากำลัง อิเล็กทรอนิกส์ และเมคคาทรอนิกส์ ออกแบบให้ตรงรายวิชา ทนต่อการใช้งานในห้องเรียน และมีใบงานประกอบ</p>
+          <ul class="inst-list">
+            <li>ชุดฝึก PLC และเซนเซอร์</li>
+            <li>ชุดฝึกควบคุมมอเตอร์</li>
+            <li>ชุดสาธิตโซลาร์เซลล์</li>
+            <li>ชุดฝึกติดตั้งไฟฟ้าอาคาร</li>
+          </ul>
+          <div><a class="btn btn-copper" href="#contact">ขอใบเสนอราคา <span class="arrow">→</span></a></div>
+        </div>
+        <div class="inst-art">
+          <svg viewBox="0 0 340 260" aria-hidden="true">
+            <rect x="20" y="20" width="300" height="200" rx="3" class="art"/>
+            <rect x="40" y="40" width="120" height="70" class="art-dim"/>
+            <text x="50" y="62" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">PLC FX3U</text>
+            <path class="art" d="M50 80h100M50 94h70"/>
+            <circle cx="200" cy="65" r="18" class="art"/><circle cx="250" cy="65" r="18" class="art"/><circle cx="300" cy="65" r="0" />
+            <path class="art" d="M200 52v13l8 6M250 52v13l-8 6"/>
+            <rect x="180" y="100" width="120" height="16" class="art-dim"/>
+            <path class="art" d="M40 140h260" stroke-dasharray="3 5"/>
+            <circle cx="60" cy="180" r="10" class="art-fill"/><circle cx="95" cy="180" r="10" class="art"/><circle cx="130" cy="180" r="10" class="art"/>
+            <rect x="170" y="166" width="130" height="28" class="art"/>
+            <path class="art" d="M182 180h20M212 180h20M242 180h20M272 180h16"/>
+            <path class="art-dim" d="M60 220v24M280 220v24"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="works" style="background:var(--bg-2);border-block:1px solid var(--line)">
+    <div class="rail">
+      <div class="split-head">
+        <div class="sec-head">
+          <span class="eyebrow">ผลงาน</span>
+          <h2>งานที่ส่งมอบแล้ว</h2>
+        </div>
+        <a class="btn btn-outline" href="#contact">ดูผลงานทั้งหมดในไลน์ <span class="arrow">→</span></a>
+      </div>
+      <div class="bento">
+        <div class="work big">
+          <span class="photo-tag">ใส่รูปงานจริง</span>
+          <svg class="bg" viewBox="0 0 300 220" aria-hidden="true"><path class="art" d="M40 150 L90 80 L210 80 L170 150 Z"/><path class="art-dim" d="M70 115h120M55 132h120M80 80l-20 70M120 80l-20 70M160 80l-20 70"/><circle cx="240" cy="44" r="18" class="art"/><path class="art" d="M120 150v40M90 190h60"/></svg>
+          <div class="meta"><small>PV-01 · ปวส. ไฟฟ้ากำลัง</small><b>ปั๊มน้ำโซลาร์ 600 W สำหรับแปลงผัก</b><span>ลดค่าไฟสูบน้ำ 100% · ได้รางวัลระดับจังหวัด</span></div>
+        </div>
+        <div class="work wide">
+          <span class="photo-tag">ใส่รูปงานจริง</span>
+          <svg class="bg" viewBox="0 0 300 220" aria-hidden="true"><circle cx="110" cy="120" r="54" class="art"/><path class="art" d="M200 60h70v110h-70z"/><path class="art" d="M164 120H200" stroke-dasharray="4 6"/></svg>
+          <div class="meta"><small>MC-03 · ปวส. เมคคาทรอนิกส์</small><b>สายพานคัดแยกด้วย PLC</b><span>ชลบุรี</span></div>
+        </div>
+        <div class="work">
+          <span class="photo-tag">ใส่รูปงานจริง</span>
+          <svg class="bg" viewBox="0 0 300 220" aria-hidden="true"><rect x="110" y="70" width="80" height="80" rx="4" class="art"/><path class="art" d="M232 60a24 24 0 0 1 24 24M232 44a40 40 0 0 1 40 40"/></svg>
+          <div class="meta"><small>IOT-02 · ปวส.</small><b>มิเตอร์ไฟ IoT</b><span>นครราชสีมา</span></div>
+        </div>
+        <div class="work">
+          <span class="photo-tag">ใส่รูปงานจริง</span>
+          <svg class="bg" viewBox="0 0 300 220" aria-hidden="true"><circle cx="70" cy="150" r="40" class="art"/><circle cx="230" cy="150" r="40" class="art"/><path class="art" d="M70 150 L120 90 H190 L230 150"/></svg>
+          <div class="meta"><small>EV-05 · ปวส.</small><b>จักรยานไฟฟ้า 48 V</b><span>เชียงใหม่</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <div class="rail">
+      <div class="sec-head">
+        <span class="eyebrow">รีวิว (ตัวอย่าง)</span>
+        <h2>นักศึกษาพูดถึงเรา</h2>
+      </div>
+      <div class="quotes">
+        <figure class="quote" style="margin:0">
+          <span class="mark" aria-hidden="true">“</span>
+          <p>พี่สอนจนเข้าใจว่าทำไมต้องเลือกคอนแทคเตอร์ตัวนี้ วันสอบกรรมการถามเรื่องวงจรควบคุม ตอบได้หมดทุกข้อ</p>
+          <figcaption class="who"><span class="avatar">ม</span><span><b>มนัสวี ก.</b><small>ปวส.2 ไฟฟ้ากำลัง · ขอนแก่น</small></span></figcaption>
+        </figure>
+        <figure class="quote" style="margin:0">
+          <span class="mark" aria-hidden="true">“</span>
+          <p>มินิโปรเจค Boost Converter ได้ผลวัดใกล้ผลจำลองมาก อาจารย์ชมเรื่องบทวิเคราะห์</p>
+          <figcaption class="who"><span class="avatar">ภ</span><span><b>ภาคิน ว.</b><small>วิศวกรรมไฟฟ้า ปี 3</small></span></figcaption>
+        </figure>
+        <figure class="quote" style="margin:0">
+          <span class="mark" aria-hidden="true">“</span>
+          <p>แผนกสั่งชุดฝึก PLC ไป 6 ชุด งานเรียบร้อย มีใบงานให้ใช้สอนได้เลย</p>
+          <figcaption class="who"><span class="avatar">อ</span><span><b>อ.ธนพล ส.</b><small>หัวหน้าแผนกไฟฟ้า</small></span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top:0">
+    <div class="rail faq-wrap">
+      <div class="sec-head" style="margin:0">
+        <span class="eyebrow">คำถามที่พบบ่อย</span>
+        <h2>ก่อนเริ่มงาน</h2>
+        <p>ถ้าไม่เจอคำตอบที่ต้องการ ทักไลน์มาได้เลย ตอบภายในวันเดียวกัน</p>
+      </div>
+      <div class="faq">
+        <details open><summary>ใช้เวลากี่วัน</summary><p>งานขนาดเล็กประมาณ 1–2 สัปดาห์ งานที่มี PLC หรือ IoT ประมาณ 3–4 สัปดาห์ ถ้ากำหนดส่งใกล้แล้ว ทักมาก่อน เราจะเสนอหัวข้อที่ทำทัน</p></details>
+        <details><summary>ถ้าส่งไปแล้วเสียต้องทำยังไง</summary><p>แพ็กเกจ Complete รับประกัน 30 วัน แพ็กเกจอื่นส่งรูปหรือคลิปอาการมาทางไลน์ เราช่วยหาสาเหตุให้ฟรี ค่าอะไหล่คิดตามจริง</p></details>
+        <details><summary>ช่วยทำเล่มรายงานด้วยไหม</summary><p>เราช่วยเรียบเรียงบทวิธีดำเนินงานและผลการทดลองจากค่าที่วัดได้จริง ส่วนบทนำและสรุปแนะนำให้เขียนเอง เพราะกรรมการมักถามจากส่วนนี้</p></details>
+        <details><summary>รับงานปริญญาตรีแบบไหนบ้าง</summary><p>รับมินิโปรเจครายวิชาและโครงงานวิศวกรรมไฟฟ้า เช่น อิเล็กทรอนิกส์กำลัง ระบบควบคุม ไมโครคอนโทรลเลอร์ และพลังงานทดแทน เราช่วยตั้งแต่ออกแบบ คำนวณ จำลอง จนถึงสร้างและวัดผลจริง</p></details>
+        <details><summary>อยู่ต่างจังหวัด ใช้บริการได้ไหม</summary><p>ได้ ส่งคิททางขนส่งทั่วประเทศ และสอนทำผ่านวิดีโอคอล</p></details>
+        <details><summary>วิทยาลัยสั่งชุดฝึกได้ไหม</summary><p>ได้ เราออกใบเสนอราคาและใบกำกับภาษีได้ ผลิตตามรายวิชา พร้อมใบงานประกอบการสอน</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="cta">
+    <div class="rail">
+      <div>
+        <span class="eyebrow">เริ่มต้นวันนี้</span>
+        <h2 style="margin-top:16px">บอกหัวข้อหรืองบที่มี<br><span class="copper-text">เราช่วยวางแผนให้ฟรี</span></h2>
+        <p class="lede">ส่งระดับชั้น แผนก และกำหนดส่งมาทางไลน์ ภายในวันเดียวกันคุณจะได้หัวข้อที่เหมาะ 2–3 แบบพร้อมราคาประเมิน</p>
+      </div>
+      <div class="contact-card">
+        <div class="crow"><span>LINE Official</span><b id="line-id">@phase3project</b><button class="copy" id="copy-line" type="button">คัดลอก</button></div>
+        <div class="crow"><span>โทรศัพท์</span><b>08x-xxx-xxxx</b></div>
+        <div class="crow"><span>เวลาทำการ</span><b>ทุกวัน 09:00–21:00</b></div>
+        <a class="btn" href="#contact">แอดไลน์ปรึกษาฟรี <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="rail"><span>© 2569 เฟสสาม Electrical Project Studio</span><span>ที่ปรึกษาและสอนทำโปรเจคไฟฟ้า ปวช. / ปวส. / ปริญญาตรี · ชุดฝึกสำหรับสถานศึกษา</span></div>
+</footer>
+
+<a class="fab" href="#contact"><i></i>LINE ปรึกษาฟรี</a>
+
+<script>
+/* tabs */
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(t, focus) {
+    tabs.forEach(function (x) {
+      var on = x === t;
+      x.setAttribute('aria-selected', on);
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) t.focus();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(t); });
+    t.addEventListener('keydown', function (e) {
+      var d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length], true); }
+    });
+  });
+})();
+
+/* copy LINE id */
+document.getElementById('copy-line').addEventListener('click', function () {
+  var btn = this, el = document.getElementById('line-id');
+  function done() { btn.textContent = 'คัดลอกแล้ว'; setTimeout(function () { btn.textContent = 'คัดลอก'; }, 1600); }
+  function fallback() { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'กด Ctrl+C'; }
+  try { navigator.clipboard.writeText(el.textContent).then(done, fallback); } catch (e) { fallback(); }
+});
+
+/* hero circuit: orthogonal copper traces with travelling current pulses */
+(function () {
+  var c = document.getElementById('circuit'), ctx = c.getContext('2d');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var traces = [], W, H, G = 28, seed = 7;
+  function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  function build() {
+    var dpr = Math.min(devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = W * dpr; c.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    traces = []; seed = 7;
+    var n = Math.round(W * H / 9000);
+    for (var k = 0; k < n; k++) {
+      var x = Math.round((W * 0.35 + rnd() * W * 0.7) / G) * G, y = Math.round(rnd() * H / G) * G;
+      var pts = [[x, y]], dir = rnd() < .5 ? 0 : 1, len = 0;
+      for (var s = 0; s < 4 + rnd() * 5; s++) {
+        var step = G * (1 + Math.floor(rnd() * 5));
+        if (dir === 0) x += rnd() < .7 ? -step : step; else y += rnd() < .5 ? -step : step;
+        pts.push([x, y]); len += step; dir = 1 - dir;
+      }
+      traces.push({ pts: pts, len: len, t: rnd(), v: 0.0015 + rnd() * 0.003 });
+    }
+  }
+  function at(tr, f) {
+    var d = f * tr.len, p = tr.pts;
+    for (var i = 1; i < p.length; i++) {
+      var sl = Math.abs(p[i][0] - p[i-1][0]) + Math.abs(p[i][1] - p[i-1][1]);
+      if (d <= sl) { var r = sl ? d / sl : 0; return [p[i-1][0] + (p[i][0] - p[i-1][0]) * r, p[i-1][1] + (p[i][1] - p[i-1][1]) * r]; }
+      d -= sl;
+    }
+    return p[p.length - 1];
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1.2; ctx.strokeStyle = 'rgba(212,137,90,.22)'; ctx.lineJoin = 'round';
+    traces.forEach(function (tr) {
+      ctx.beginPath(); tr.pts.forEach(function (p, i) { i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }); ctx.stroke();
+      var a = tr.pts[0], b = tr.pts[tr.pts.length - 1];
+      ctx.fillStyle = 'rgba(212,137,90,.35)';
+      ctx.beginPath(); ctx.arc(a[0], a[1], 2.6, 0, 7); ctx.fill();
+      ctx.strokeStyle = 'rgba(212,137,90,.35)'; ctx.beginPath(); ctx.arc(b[0], b[1], 3.5, 0, 7); ctx.stroke(); ctx.strokeStyle = 'rgba(212,137,90,.22)';
+    });
+    traces.forEach(function (tr) {
+      var p = at(tr, tr.t), g = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], 14);
+      g.addColorStop(0, 'rgba(255,214,176,.95)'); g.addColorStop(.3, 'rgba(212,137,90,.5)'); g.addColorStop(1, 'rgba(212,137,90,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p[0], p[1], 14, 0, 7); ctx.fill();
+      if (!reduce) { tr.t += tr.v; if (tr.t > 1) tr.t = 0; }
+    });
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  build(); draw();
+  var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { build(); if (reduce) draw(); }, 150); });
+})();
+</script>
+</body>
+</html>
