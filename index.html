@@ -108,6 +108,71 @@ section { padding-block: clamp(72px, 10vw, 120px); }
 .split-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 48px; }
 .split-head .sec-head { margin: 0; }
 
+/* inside the cabinet (3D exploded view) */
+.inside { border-bottom: 1px solid var(--line); background: radial-gradient(70% 60% at 30% 40%, rgba(212,137,90,.07), transparent 70%), var(--bg); }
+.inside .sec-head { margin-bottom: 24px; }
+.iscroll { display: grid; grid-template-columns: 1.3fr .7fr; gap: 40px; }
+.stage-wrap { position: sticky; top: calc(76px + env(safe-area-inset-top, 0px)); height: calc(100vh - 100px); min-height: 420px; }
+.stage { position: relative; width: 100%; height: 100%; border: 1px solid var(--line); background: radial-gradient(80% 70% at 50% 45%, var(--surface-2), var(--bg) 75%); overflow: hidden; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+.stage .hud { position: absolute; left: 16px; right: 16px; bottom: 14px; display: flex; align-items: center; gap: 14px; font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; color: var(--muted); pointer-events: none; }
+.stage .bar { flex: 1; height: 2px; background: var(--line); position: relative; }
+.stage .bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, var(--copper), var(--copper-hi)); }
+.stage .hint { position: absolute; top: 16px; left: 16px; font-size: .82rem; color: var(--muted); border: 1px solid var(--line); background: rgba(11,16,21,.7); padding: 4px 12px; transition: opacity .3s; pointer-events: none; }
+.cab-labels { position: absolute; inset: 0; pointer-events: none; }
+.cab-label { position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); white-space: nowrap; font-size: .8rem; background: rgba(20,29,37,.92); border: 1px solid var(--copper-lo); color: var(--ink); padding: 4px 10px; opacity: 0; transition: opacity .25s; }
+.cab-label::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 14px; background: var(--copper); }
+.cab-label b { color: var(--copper-hi); font-weight: 500; margin-right: 6px; font-family: var(--f-mono); font-size: .72rem; }
+.cab-label.on { opacity: 1; }
+.stage.no3d canvas, .stage.no3d .hud, .stage.no3d .hint { display: none; }
+.stage .fallback { display: none; position: absolute; inset: 0; place-items: center; text-align: center; padding: 24px; color: var(--muted); }
+.stage.no3d .fallback { display: grid; }
+.isteps { display: grid; padding-bottom: 20vh; }
+.istep { min-height: 78vh; display: grid; align-content: center; gap: 14px; opacity: .32; transition: opacity .35s; }
+.istep.active { opacity: 1; }
+.istep .no { font-family: var(--f-mono); font-size: .75rem; letter-spacing: .12em; color: var(--copper); }
+.istep h3 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 600; }
+.istep p { color: var(--muted); font-weight: 300; }
+.istep ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .95rem; }
+.istep li { padding-left: 16px; position: relative; }
+.istep li::before { content: ""; position: absolute; left: 0; top: .75em; width: 7px; height: 1px; background: var(--copper); }
+.wire-colors { display: flex; flex-wrap: wrap; gap: 8px; }
+.wire-colors span { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--muted); }
+.wire-colors i { width: 18px; height: 4px; border-radius: 2px; }
+@media (max-width: 900px) {
+  .iscroll { grid-template-columns: 1fr; gap: 0; }
+  .stage-wrap { top: calc(64px + env(safe-area-inset-top, 0px)); height: 46vh; min-height: 280px; z-index: 3; background: var(--bg); padding-bottom: 10px; }
+  .isteps { position: relative; z-index: 1; padding-bottom: 10vh; }
+  .istep { min-height: 70vh; align-content: end; padding-bottom: 6vh; }
+  .istep > div { background: rgba(15,22,28,.94); border: 1px solid var(--line); padding: 20px; display: grid; gap: 12px; }
+  .cab-label { font-size: .7rem; padding: 3px 8px; }
+}
+
+/* PCB layer viewer */
+.pcb { border-bottom: 1px solid var(--line); }
+.pcb-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 48px; align-items: center; }
+.pcb-stage { height: min(620px, 78vh); min-height: 420px; }
+.pcb-stage canvas { cursor: grab; touch-action: pan-y; }
+.pcb-stage canvas:active { cursor: grabbing; }
+.pcb-copy { display: grid; gap: 18px; min-width: 0; }
+.pcb-copy > p { color: var(--muted); font-weight: 300; }
+.pcb-slider { display: flex; align-items: center; gap: 16px; border-block: 1px solid var(--line); padding-block: 14px; }
+.pcb-slider label { font-size: .9rem; white-space: nowrap; }
+.pcb-slider input { flex: 1; accent-color: var(--copper); }
+.pcb-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.pcb-layers button { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: grid; grid-template-columns: 14px 1fr; gap: 14px; align-items: center; padding: 10px 12px; border: 1px solid transparent; transition: background .2s, border-color .2s; }
+.pcb-layers button:hover { background: var(--bg-2); }
+.pcb-layers button:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: -2px; }
+.pcb-layers button[aria-pressed="true"] { border-color: var(--copper-lo); background: var(--surface); }
+.pcb-layers i { width: 14px; height: 14px; border-radius: 2px; }
+.pcb-layers b { display: block; font-weight: 500; font-size: .96rem; }
+.pcb-layers small { color: var(--muted); font-size: .82rem; }
+.pcb-tools { font-family: var(--f-mono); font-size: .76rem; letter-spacing: .04em; color: var(--muted) !important; }
+@media (max-width: 900px) {
+  .pcb-grid { grid-template-columns: 1fr; gap: 28px; }
+  .pcb-stage { height: 58vh; min-height: 340px; }
+}
+
 /* levels */
 .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
 .level { background: var(--bg); padding: 32px; display: grid; gap: 16px; align-content: start; min-width: 0; }
@@ -329,6 +394,97 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <span>SOLAR PV ON-GRID / OFF-GRID</span><span>PLC · MITSUBISHI / SIEMENS</span><span>ESP32 · IoT DASHBOARD</span><span>VFD MOTOR CONTROL</span><span>STAR–DELTA STARTER</span><span>RCD 30mA</span><span>EV CONVERSION 48V</span><span>SMART METER kWh</span>
     </div>
   </div>
+
+  <section id="inside" class="inside">
+    <div class="rail">
+      <div class="sec-head">
+        <span class="eyebrow">เปิดตู้ดูข้างใน</span>
+        <h2>ทุกชิ้นในตู้ควบคุม เราสอนให้เข้าใจ</h2>
+        <p>เลื่อนลงเพื่อเปิดตู้ควบคุมมอเตอร์ทีละชั้น นี่คืออุปกรณ์ที่นักศึกษาจะได้ต่อและอธิบายเองในงานหมวด MC-03</p>
+      </div>
+      <div class="iscroll">
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <canvas id="cab3d" aria-label="โมเดล 3 มิติของตู้ควบคุมมอเตอร์ ที่แยกชิ้นส่วนออกตามการเลื่อนหน้าจอ" role="img"></canvas>
+            <div class="cab-labels" id="cab-labels"></div>
+            <span class="hint" id="cab-hint">เลื่อนลงเพื่อเปิดตู้ ↓</span>
+            <div class="hud"><span id="cab-step">01 / 05</span><span class="bar"><i id="cab-bar"></i></span><span>MCC PANEL</span></div>
+            <div class="fallback">อุปกรณ์นี้แสดงโมเดล 3 มิติไม่ได้ อ่านรายละเอียดแต่ละชั้นได้ด้านข้าง</div>
+          </div>
+        </div>
+        <div class="isteps">
+          <div class="istep active"><div>
+            <span class="no">01 / 05 · ตู้ควบคุม</span>
+            <h3>ตู้ควบคุมแบบที่ใช้ในโรงงานจริง</h3>
+            <p>งานควบคุมมอเตอร์และ PLC ของเราประกอบในตู้เหล็กพร้อมแผ่นติดตั้ง เดินสายตามมาตรฐาน ยกไปสาธิตต่อหน้ากรรมการได้ทันที</p>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">02 / 05 · ชั้นป้องกัน</span>
+            <h3>เบรกเกอร์และเครื่องตัดไฟรั่ว</h3>
+            <ul><li>เบรกเกอร์หลัก 3 เฟส ตัดไฟทั้งตู้</li><li>RCD 30 mA ตัดไฟเมื่อมีกระแสรั่วลงดิน</li><li>เบรกเกอร์ลูกย่อยแยกวงจรควบคุม</li></ul>
+            <p>เราสอนเลือกพิกัดจากกระแสโหลดจริง เพราะกรรมการถามข้อนี้เกือบทุกครั้ง</p>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">03 / 05 · ควบคุมมอเตอร์</span>
+            <h3>คอนแทคเตอร์และโอเวอร์โหลดรีเลย์</h3>
+            <ul><li>คอนแทคเตอร์ตัดต่อไฟเข้ามอเตอร์ด้วยไฟควบคุม</li><li>โอเวอร์โหลดรีเลย์ตัดวงจรเมื่อมอเตอร์กินกระแสเกิน</li></ul>
+            <p>ชุดเดียวกับที่ใช้ในวงจรสตาร์-เดลต้าและวงจรกลับทางหมุน</p>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">04 / 05 · สมองของระบบ</span>
+            <h3>PLC และแหล่งจ่ายไฟ 24 VDC</h3>
+            <ul><li>PLC รับสัญญาณจากปุ่มกดและเซนเซอร์ แล้วสั่งคอนแทคเตอร์ตามโปรแกรม</li><li>Power Supply แปลง 220 VAC เป็น 24 VDC ให้ PLC และเซนเซอร์</li></ul>
+            <p>นักศึกษาได้เขียน Ladder เอง และอธิบายได้ทุกบรรทัด</p>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">05 / 05 · งานเดินสาย</span>
+            <h3>รางเดินสาย เทอร์มินัล และสีสายมาตรฐาน</h3>
+            <p>สายทุกเส้นวิ่งในรางเดินสาย เข้าเทอร์มินัลก่อนออกนอกตู้ และติดป้ายหมายเลขครบ</p>
+            <div class="wire-colors">
+              <span><i style="background:#7a4a2a"></i>L1 น้ำตาล</span>
+              <span><i style="background:#15181b;outline:1px solid #3a444d"></i>L2 ดำ</span>
+              <span><i style="background:#8b8e91"></i>L3 เทา</span>
+              <span><i style="background:#2f6fb5"></i>N ฟ้า</span>
+              <span><i style="background:linear-gradient(90deg,#3a9a4a 50%,#e0c23a 50%)"></i>PE เขียวเหลือง</span>
+            </div>
+            <div><a class="btn btn-copper" href="#contact">ปรึกษางานตู้ควบคุม <span class="arrow">→</span></a></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pcb" class="pcb">
+    <div class="rail">
+      <div class="pcb-grid">
+        <div class="stage pcb-stage" id="pcb-stage">
+          <canvas id="pcb3d" aria-label="โมเดล 3 มิติของบอร์ดวงจร IoT ที่แยกออกเป็นชั้น ลากเพื่อหมุนได้" role="img"></canvas>
+          <div class="cab-labels" id="pcb-labels"></div>
+          <span class="hint" style="opacity:1">ลากเพื่อหมุนบอร์ด</span>
+          <div class="hud"><span>TMAT IoT RELAY · REV 1</span><span class="bar"></span><span>2 LAYER · 1.6 MM</span></div>
+          <div class="fallback">อุปกรณ์นี้แสดงโมเดล 3 มิติไม่ได้ อ่านรายละเอียดแต่ละชั้นได้ด้านข้าง</div>
+        </div>
+        <div class="pcb-copy">
+          <span class="eyebrow">บอร์ดวงจร PCB</span>
+          <h2>ออกแบบ PCB เอง ตั้งแต่วงจรถึงบอร์ดจริง</h2>
+          <p>งาน IoT และอิเล็กทรอนิกส์กำลังของเราไม่ต่อสายบนบอร์ดทดลอง เราสอนวาดวงจร วางลายทองแดง และสั่งผลิตบอร์ดจริง แตะชื่อชั้นเพื่อดูทีละชั้น</p>
+          <div class="pcb-slider">
+            <label for="pcb-explode">แยกชั้น</label>
+            <input id="pcb-explode" type="range" min="0" max="100" value="0">
+          </div>
+          <ul class="pcb-layers">
+            <li><button type="button" data-layer="parts" aria-pressed="false"><i style="background:#2f6fb5"></i><span><b>ชิ้นส่วนอิเล็กทรอนิกส์</b><small>ESP32, รีเลย์, เรกูเลเตอร์, ตัวเก็บประจุ</small></span></button></li>
+            <li><button type="button" data-layer="silk" aria-pressed="false"><i style="background:#f2f2ee"></i><span><b>ซิลค์สกรีน</b><small>ตัวหนังสือและกรอบตำแหน่งอุปกรณ์</small></span></button></li>
+            <li><button type="button" data-layer="mask" aria-pressed="false"><i style="background:#111417;outline:1px solid #3a444d"></i><span><b>โซลเดอร์มาสก์</b><small>ชั้นเคลือบกันลายทองแดงลัดวงจร</small></span></button></li>
+            <li><button type="button" data-layer="copper" aria-pressed="false"><i style="background:#d4895a"></i><span><b>ลายทองแดงด้านบน</b><small>เส้นสัญญาณและแพดบัดกรี</small></span></button></li>
+            <li><button type="button" data-layer="core" aria-pressed="false"><i style="background:#c9b77a"></i><span><b>แผ่นฐาน FR-4</b><small>ไฟเบอร์กลาสหนา 1.6 มม.</small></span></button></li>
+            <li><button type="button" data-layer="bottom" aria-pressed="false"><i style="background:#b06a3e"></i><span><b>ทองแดงด้านล่าง</b><small>กราวด์เพลนเต็มแผ่น</small></span></button></li>
+          </ul>
+          <p class="pcb-tools">ใช้โปรแกรม KiCad หรือ EasyEDA · สั่งผลิตได้ภายใน 7–10 วัน</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section id="levels">
     <div class="rail">
@@ -882,5 +1038,8 @@ document.getElementById('copy-line').addEventListener('click', function () {
   var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { build(); if (reduce) draw(); }, 150); });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="assets/cabinet3d.js"></script>
+<script src="assets/pcb3d.js"></script>
 </body>
 </html>
