@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="คลังความรู้ TMAT แนวทางทำโปรเจคไฟฟ้า ปวช. ปวส. ปริญญาตรี ตั้งแต่เลือกหัวข้อ เขียนเล่ม คำนวณ จนถึงสอบโครงงาน">
+<title>คลังความรู้ TMAT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: same TMAT dark/copper system as the home page; guide reads like a field handbook — sticky section index on the left, content column on the right. */
+:root {
+  color-scheme: dark;
+  --bg: #0b1015; --bg-2: #0f161c; --surface: #141d25; --surface-2: #1a252f; --line: #24313c;
+  --ink: #eef1f3; --muted: #8e9ca8;
+  --copper: #d4895a; --copper-hi: #f3c29a; --copper-lo: #7a4a2e; --on-copper: #160d07;
+  --ok: #5cc28a; --warn: #e2b04a;
+  --line-green: #06c755;
+  --f-display: "Anuphan", "Leelawadee UI", system-ui, sans-serif;
+  --f-body: "Anuphan", "Leelawadee UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.75; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+.rail { max-width: 1200px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--f-display); line-height: 1.2; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(1.7rem, 3.4vw, 2.4rem); font-weight: 600; }
+h3 { font-size: 1.2rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--copper-hi); }
+:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: 3px; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; color: var(--copper); }
+.eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--copper); }
+.copper-text { background: linear-gradient(100deg, var(--copper-hi), var(--copper) 55%, var(--copper-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.muted { color: var(--muted); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--f-display); font-weight: 600; font-size: 1rem; padding: 12px 22px; border-radius: 2px; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+.btn-copper { background: linear-gradient(135deg, var(--copper-hi), var(--copper)); color: var(--on-copper); }
+.btn-outline { border-color: var(--line); color: var(--ink); background: rgba(255,255,255,.02); }
+.btn-outline:hover { border-color: var(--copper); }
+
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(11,16,21,.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+header .rail { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+.brand svg { width: 34px; height: 34px; flex: none; }
+.brand b { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; display: block; line-height: 1.1; }
+.brand small { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .14em; color: var(--muted); }
+nav.top { display: flex; gap: 26px; }
+nav.top a { text-decoration: none; font-size: .93rem; color: var(--muted); }
+nav.top a:hover, nav.top a[aria-current] { color: var(--ink); }
+header .btn { padding: 10px 18px; font-size: .92rem; }
+@media (max-width: 880px) { nav.top { display: none; } }
+
+/* hero */
+.hero { border-bottom: 1px solid var(--line); background: radial-gradient(70% 140% at 90% 0%, rgba(212,137,90,.14), transparent 60%), var(--bg); }
+.hero .rail { padding-block: clamp(56px, 8vw, 96px) 48px; display: grid; gap: 22px; }
+.hero h1 { font-size: clamp(2.2rem, 5.4vw, 3.8rem); font-weight: 700; letter-spacing: -0.02em; max-width: 16em; }
+.hero p { color: var(--muted); font-size: 1.12rem; font-weight: 300; max-width: 40em; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.chips a { text-decoration: none; color: var(--ink); border: 1px solid var(--line); padding: 6px 14px; font-size: .9rem; background: var(--bg-2); }
+.chips a:hover { border-color: var(--copper); }
+
+/* page layout */
+.layout { display: grid; grid-template-columns: 230px 1fr; gap: 56px; padding-block: 64px; }
+.toc { position: sticky; top: 96px; align-self: start; display: grid; gap: 2px; font-size: .9rem; }
+.toc p { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .12em; color: var(--muted); margin-bottom: 10px; }
+.toc a { color: var(--muted); text-decoration: none; padding: 7px 0 7px 14px; border-left: 1px solid var(--line); }
+.toc a:hover { color: var(--ink); }
+.toc a.active { color: var(--copper-hi); border-left: 2px solid var(--copper); padding-left: 13px; }
+@media (max-width: 960px) { .layout { grid-template-columns: 1fr; gap: 0; } .toc { display: none; } }
+.content { display: grid; gap: 96px; min-width: 0; }
+.block { display: grid; gap: 28px; min-width: 0; }
+.block-head { display: grid; gap: 12px; max-width: 720px; }
+.block-head p { color: var(--muted); font-weight: 300; font-size: 1.05rem; }
+
+/* roadmap */
+.road { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: r; }
+.road > li { counter-increment: r; display: grid; grid-template-columns: 56px 1fr; gap: 20px; position: relative; padding-bottom: 36px; }
+.road > li::before { content: counter(r); width: 44px; height: 44px; border: 1.5px solid var(--copper); border-radius: 50%; display: grid; place-items: center; font-family: var(--f-mono); color: var(--copper-hi); background: var(--bg); position: relative; z-index: 1; }
+.road > li:not(:last-child)::after { content: ""; position: absolute; left: 22px; top: 44px; bottom: 0; width: 1px; background: linear-gradient(var(--copper-lo), var(--line)); }
+.road .step { display: grid; gap: 10px; padding-top: 6px; min-width: 0; }
+.road .step > p { color: var(--muted); font-weight: 300; }
+.road ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: .96rem; }
+.tip { border-left: 2px solid var(--copper); background: var(--bg-2); padding: 12px 16px; font-size: .93rem; }
+.tip b { color: var(--copper-hi); font-weight: 500; }
+.warn { border-left-color: var(--warn); }
+.warn b { color: var(--warn); }
+
+/* report chapters */
+.chapters { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.chapter { background: var(--bg-2); padding: 24px; display: grid; gap: 10px; align-content: start; }
+.chapter .no { font-family: var(--f-mono); font-size: .74rem; letter-spacing: .1em; color: var(--copper); }
+.chapter ul { margin: 0; padding-left: 1.1em; color: var(--muted); font-size: .93rem; display: grid; gap: 2px; }
+.levels-table { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: .94rem; }
+th, td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-display); font-weight: 600; background: var(--surface); }
+thead th:first-child { width: 22%; }
+tbody tr:last-child td { border-bottom: 0; }
+td:first-child { color: var(--muted); }
+
+/* formulas */
+.formulas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 16px; }
+.formula { border: 1px solid var(--line); background: var(--bg-2); padding: 20px; display: grid; gap: 10px; align-content: start; }
+.formula h4 { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.formula .eq { font-family: var(--f-mono); font-size: 1.15rem; color: var(--copper-hi); }
+.formula p { font-size: .88rem; color: var(--muted); }
+
+/* calculator */
+.calc { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); background: var(--bg-2); }
+@media (max-width: 760px) { .calc { grid-template-columns: 1fr; } }
+.calc form { padding: 28px; display: grid; gap: 16px; border-right: 1px solid var(--line); }
+@media (max-width: 760px) { .calc form { border-right: 0; border-bottom: 1px solid var(--line); } }
+.field { display: grid; gap: 6px; }
+.field label { font-size: .9rem; }
+.field label small { color: var(--muted); }
+.field .inp { display: flex; align-items: stretch; border: 1px solid var(--line); background: var(--bg); }
+.field input, .field select { all: unset; flex: 1; min-width: 0; padding: 10px 12px; font-family: var(--f-mono); font-size: 1rem; color: var(--ink); }
+.field select { cursor: pointer; font-family: var(--f-body); }
+.field select option { background: var(--surface); color: var(--ink); }
+.field .unit { display: grid; place-items: center; padding: 0 12px; font-family: var(--f-mono); font-size: .82rem; color: var(--muted); border-left: 1px solid var(--line); }
+.field .inp:focus-within { border-color: var(--copper); }
+.results { padding: 28px; display: grid; gap: 4px; align-content: start; }
+.results h3 { margin-bottom: 8px; }
+.res { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.res span { color: var(--muted); font-size: .92rem; }
+.res b { font-family: var(--f-mono); font-weight: 500; font-size: 1.35rem; color: var(--copper-hi); white-space: nowrap; }
+.res b small { font-size: .7em; color: var(--muted); margin-left: 4px; }
+.results .note { margin-top: 14px; font-size: .84rem; color: var(--muted); }
+
+/* questions */
+.qa { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+.q { border: 1px solid var(--line); padding: 22px; display: grid; gap: 10px; background: var(--bg-2); align-content: start; }
+.q h3 { font-size: 1.05rem; font-weight: 500; }
+.q h3::before { content: "ถาม "; color: var(--copper); font-family: var(--f-mono); font-size: .8rem; }
+.q p { color: var(--muted); font-size: .93rem; font-weight: 300; }
+
+/* checklist */
+.check-wrap { border: 1px solid var(--line); background: var(--bg-2); }
+.check-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 24px; border-bottom: 1px solid var(--line); }
+.meter { flex: 1; min-width: 160px; max-width: 320px; height: 6px; background: var(--line); position: relative; }
+.meter i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--copper), var(--copper-hi)); width: 0; transition: width .25s; }
+.check-top b { font-family: var(--f-mono); font-weight: 500; }
+.reset { all: unset; cursor: pointer; font-size: .85rem; color: var(--muted); border-bottom: 1px solid var(--line); }
+.reset:focus-visible { outline: 2px solid var(--copper-hi); }
+.checks { list-style: none; margin: 0; padding: 8px 24px 16px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+@media (max-width: 760px) { .checks { grid-template-columns: 1fr; } }
+.checks li { border-bottom: 1px solid var(--line); }
+.checks label { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; cursor: pointer; font-size: .96rem; }
+.checks input { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; flex: none; margin-top: 4px; border: 1.5px solid var(--muted); border-radius: 2px; display: grid; place-items: center; cursor: pointer; }
+.checks input:checked { background: var(--copper); border-color: var(--copper); }
+.checks input:checked::after { content: ""; width: 5px; height: 9px; border: solid var(--on-copper); border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+.checks input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--copper-lo); }
+
+/* upcoming */
+.upcoming { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.post { border: 1px solid var(--line); padding: 20px; display: grid; gap: 8px; align-content: start; }
+.post small { font-family: var(--f-mono); font-size: .72rem; color: var(--copper); letter-spacing: .08em; }
+.post b { font-family: var(--f-display); font-weight: 500; font-size: 1.05rem; }
+.post .soon { justify-self: start; font-size: .74rem; color: var(--muted); border: 1px dashed var(--line); padding: 0 8px; }
+
+.cta { border: 1px solid var(--line); padding: clamp(28px, 5vw, 48px); background: radial-gradient(60% 140% at 90% 50%, rgba(212,137,90,.16), transparent 70%), var(--bg-2); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+.cta h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+.cta p { color: var(--muted); margin-top: 8px; font-weight: 300; }
+
+footer { border-top: 1px solid var(--line); padding-block: 32px 100px; color: var(--muted); font-size: .84rem; }
+footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+footer a { color: var(--muted); }
+.fab { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 40; background: var(--line-green); color: #fff; border-radius: 999px; padding: 13px 20px; font-family: var(--f-display); font-weight: 600; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="rail">
+    <a class="brand" href="index.html" aria-label="TMAT หน้าแรก">
+      <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="2" fill="none" stroke="var(--copper)" stroke-width="1.5"/><path d="M8 10h18M17 10v16" stroke="var(--copper)" stroke-width="2.5" stroke-linecap="round"/><circle cx="8" cy="10" r="2" fill="var(--copper-hi)"/><circle cx="26" cy="10" r="2" fill="var(--copper-hi)"/><circle cx="17" cy="26" r="2" fill="var(--copper-hi)"/></svg>
+      <span><b>TMAT</b><small>ELECTRICAL PROJECT STUDIO</small></span>
+    </a>
+    <nav class="top" aria-label="เมนูหลัก">
+      <a href="index.html">หน้าแรก</a>
+      <a href="index.html#projects">โปรเจค</a>
+      <a href="index.html#packages">แพ็กเกจ</a>
+      <a href="learn.html" aria-current="page">คลังความรู้</a>
+    </nav>
+    <a class="btn btn-copper" href="index.html#contact">ปรึกษาฟรี</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="rail">
+    <span class="eyebrow">คลังความรู้ TMAT</span>
+    <h1>ทำโปรเจคไฟฟ้า<br><span class="copper-text">ตั้งแต่เลือกหัวข้อจนสอบผ่าน</span></h1>
+    <p>แนวทางที่เราใช้สอนนักศึกษาจริง รวมขั้นตอนทำงาน โครงสร้างเล่มรายงาน สูตรที่ใช้บ่อย เครื่องคำนวณโซลาร์ และคำถามที่กรรมการชอบถาม ใช้ได้ทั้ง ปวช. ปวส. และปริญญาตรี</p>
+    <div class="chips">
+      <a href="#roadmap">6 ขั้นตอนทำโปรเจค</a>
+      <a href="#report">โครงสร้างเล่ม 5 บท</a>
+      <a href="#formulas">สูตรที่ใช้บ่อย</a>
+      <a href="#calculator">คำนวณระบบโซลาร์</a>
+      <a href="#questions">คำถามกรรมการ</a>
+      <a href="#checklist">เช็กลิสต์ก่อนสอบ</a>
+    </div>
+  </div>
+</div>
+
+<div class="rail layout">
+  <nav class="toc" aria-label="สารบัญ">
+    <p>สารบัญ</p>
+    <a href="#roadmap">ขั้นตอนทำโปรเจค</a>
+    <a href="#report">โครงสร้างเล่มรายงาน</a>
+    <a href="#formulas">สูตรที่ใช้บ่อย</a>
+    <a href="#calculator">คำนวณระบบโซลาร์</a>
+    <a href="#questions">คำถามกรรมการ</a>
+    <a href="#checklist">เช็กลิสต์ก่อนสอบ</a>
+    <a href="#upcoming">บทความถัดไป</a>
+  </nav>
+
+  <main class="content">
+
+    <section class="block" id="roadmap">
+      <div class="block-head">
+        <span class="eyebrow">แนวทาง</span>
+        <h2>หกขั้นตอนทำโปรเจคไฟฟ้า</h2>
+        <p>ทำตามลำดับนี้แล้วงานจะไม่ติดตอนท้าย ส่วนใหญ่ที่สอบไม่ผ่านมาจากการข้ามขั้นที่ 3 และ 5</p>
+      </div>
+      <ol class="road">
+        <li><div class="step">
+          <h3>เลือกหัวข้อให้พอดีตัว</h3>
+          <p>หัวข้อที่ดีแก้ปัญหาจริง ทำทันเวลา และอยู่ในงบที่มี</p>
+          <ul>
+            <li>เริ่มจากปัญหาใกล้ตัว: บ้าน หอพัก วิทยาลัย ชุมชน หรือฟาร์มของญาติ</li>
+            <li>เช็กว่าหาอุปกรณ์ได้ในไทย และราคารวมไม่เกินงบ</li>
+            <li>เลือกเรื่องที่สมาชิกในกลุ่มมีพื้นฐานอยู่แล้วอย่างน้อยครึ่งหนึ่ง</li>
+          </ul>
+          <p class="tip"><b>สูตรตั้งชื่อ:</b> "ระบบ/เครื่อง + ทำอะไร + ด้วยอะไร + สำหรับใคร" เช่น "ระบบรดน้ำอัตโนมัติด้วยพลังงานแสงอาทิตย์สำหรับแปลงผักชุมชน"</p>
+        </div></li>
+        <li><div class="step">
+          <h3>เขียนเค้าโครง (Proposal)</h3>
+          <p>เอกสารสั้น ๆ ที่อาจารย์ใช้อนุมัติหัวข้อ เขียนให้ชัดตั้งแต่แรกจะลดการแก้ทีหลัง</p>
+          <ul>
+            <li>หลักการและเหตุผล: ปัญหาคืออะไร มีตัวเลขหรือหลักฐานประกอบ</li>
+            <li>วัตถุประสงค์ 2–3 ข้อ ที่วัดผลได้ เช่น "เพื่อลดค่าไฟสูบน้ำอย่างน้อย 50%"</li>
+            <li>ขอบเขต: แรงดัน กำลัง ขนาด และสิ่งที่ไม่ทำ</li>
+            <li>แผนงานรายสัปดาห์และงบประมาณแยกรายการ</li>
+          </ul>
+        </div></li>
+        <li><div class="step">
+          <h3>ออกแบบและคำนวณก่อนซื้อของ</h3>
+          <p>วาด Block Diagram ก่อน แล้วค่อยลงรายละเอียดเป็นวงจร คำนวณพิกัดทุกตัวก่อนสั่งซื้อ</p>
+          <ul>
+            <li>คำนวณกำลังรวมของโหลด เลือกขนาดสายและเบรกเกอร์ให้รับกระแสได้</li>
+            <li>งานโซลาร์: คำนวณขนาดแผง แบตเตอรี่ และชาร์จคอนโทรลเลอร์ (ใช้ <a href="#calculator">เครื่องคำนวณ</a> ด้านล่าง)</li>
+            <li>ป.ตรี: จำลองวงจรใน MATLAB/Simulink, PSIM หรือ LTspice ก่อนสร้างจริง</li>
+          </ul>
+        </div></li>
+        <li><div class="step">
+          <h3>สร้างและติดตั้งอย่างปลอดภัย</h3>
+          <p>ชิ้นงานต้องสาธิตต่อหน้ากรรมการได้โดยไม่มีความเสี่ยง</p>
+          <ul>
+            <li>ตัดไฟทุกครั้งก่อนต่อสาย ใช้เครื่องตัดไฟรั่ว (RCD 30 mA) กับงานไฟ 220 V</li>
+            <li>ต่อสายดินกับโครงโลหะ ใส่ฟิวส์ฝั่ง DC ใกล้ขั้วแบตเตอรี่</li>
+            <li>เข้าหัวสายด้วยหางปลา ติดป้ายสายทุกเส้น จัดสายให้เรียบร้อย</li>
+          </ul>
+          <p class="tip warn"><b>ระวัง:</b> แบตเตอรี่ลิเธียมลัดวงจรแล้วไฟไหม้ได้ ต้องมี BMS และฟิวส์เสมอ ห้ามทดสอบบนโต๊ะไม้โดยไม่มีคนเฝ้า</p>
+        </div></li>
+        <li><div class="step">
+          <h3>ทดสอบและเก็บผลเป็นตัวเลข</h3>
+          <p>ผลการทดลองคือหัวใจของบทที่ 4 และเป็นส่วนที่กรรมการให้คะแนนมากที่สุด</p>
+          <ul>
+            <li>ออกแบบตารางบันทึกผลก่อนทดสอบ เช่น เวลา แรงดัน กระแส กำลัง อุณหภูมิ</li>
+            <li>ทดสอบซ้ำอย่างน้อย 3 ครั้ง แล้วหาค่าเฉลี่ย</li>
+            <li>เทียบก่อนและหลังใช้งาน หรือเทียบผลวัดกับผลคำนวณ</li>
+            <li>ถ่ายรูปและวิดีโอทุกขั้นตอน ใช้ในเล่มและสไลด์ได้</li>
+          </ul>
+        </div></li>
+        <li><div class="step">
+          <h3>เขียนเล่มและนำเสนอ</h3>
+          <p>เขียนบทที่ 3 และ 4 ระหว่างทำงานไปเลย จะเหลือแค่บทที่ 1, 2 และ 5 ตอนท้าย</p>
+          <ul>
+            <li>สไลด์ 10–15 หน้า: ปัญหา → วัตถุประสงค์ → หลักการ → วงจร → ผล → สรุป</li>
+            <li>ซ้อมสาธิตจริงอย่างน้อย 2 รอบ เตรียมแผนสำรองถ้าอุปกรณ์มีปัญหา</li>
+            <li>ทุกคนในกลุ่มต้องอธิบายวงจรได้ ไม่ใช่แค่คนเดียว</li>
+          </ul>
+        </div></li>
+      </ol>
+    </section>
+
+    <section class="block" id="report">
+      <div class="block-head">
+        <span class="eyebrow">เล่มรายงาน</span>
+        <h2>โครงสร้างเล่ม 5 บท</h2>
+        <p>รูปแบบที่วิทยาลัยและมหาวิทยาลัยส่วนใหญ่ใช้ ตรวจรูปแบบของสถาบันคุณอีกครั้งก่อนเริ่มเขียน</p>
+      </div>
+      <div class="chapters">
+        <div class="chapter"><span class="no">บทที่ 1</span><h3>บทนำ</h3><ul><li>ความเป็นมาและความสำคัญของปัญหา</li><li>วัตถุประสงค์</li><li>ขอบเขตของโครงงาน</li><li>ประโยชน์ที่คาดว่าจะได้รับ</li><li>นิยามศัพท์เฉพาะ</li></ul></div>
+        <div class="chapter"><span class="no">บทที่ 2</span><h3>ทฤษฎีที่เกี่ยวข้อง</h3><ul><li>หลักการทำงานของอุปกรณ์หลัก</li><li>สูตรที่ใช้คำนวณ</li><li>งานวิจัยหรือโครงงานที่เคยมีมา</li><li>อ้างอิงแหล่งที่มาทุกครั้ง</li></ul></div>
+        <div class="chapter"><span class="no">บทที่ 3</span><h3>วิธีดำเนินงาน</h3><ul><li>Block Diagram และวงจร</li><li>การคำนวณและเลือกอุปกรณ์</li><li>ขั้นตอนการสร้าง พร้อมรูป</li><li>วิธีการทดสอบ</li></ul></div>
+        <div class="chapter"><span class="no">บทที่ 4</span><h3>ผลการทดลอง</h3><ul><li>ตารางบันทึกผล</li><li>กราฟเปรียบเทียบ</li><li>วิเคราะห์ผล อธิบายว่าทำไมได้ค่านี้</li></ul></div>
+        <div class="chapter"><span class="no">บทที่ 5</span><h3>สรุปผลและข้อเสนอแนะ</h3><ul><li>สรุปตามวัตถุประสงค์ทีละข้อ</li><li>ปัญหาและอุปสรรค</li><li>แนวทางพัฒนาต่อ</li></ul></div>
+      </div>
+      <div class="levels-table">
+        <table>
+          <thead><tr><th>สิ่งที่กรรมการดู</th><th>ปวช.</th><th>ปวส.</th><th>ปริญญาตรี</th></tr></thead>
+          <tbody>
+            <tr><td>ชิ้นงาน</td><td>ต่อวงจรถูกต้อง ทำงานได้ ปลอดภัย</td><td>มีระบบควบคุม (PLC, ไมโครคอนโทรลเลอร์)</td><td>ออกแบบเองจากการคำนวณ</td></tr>
+            <tr><td>ผลการทดลอง</td><td>ทดสอบว่าทำงานตามที่ตั้งไว้</td><td>ผลเป็นตัวเลข เทียบก่อน–หลัง</td><td>เทียบผลวัดกับผลจำลองหรือทฤษฎี</td></tr>
+            <tr><td>บทที่ 2</td><td>หลักการทำงานของอุปกรณ์</td><td>ทฤษฎีและสูตรที่ใช้</td><td>ทบทวนงานวิจัยที่เกี่ยวข้อง</td></tr>
+            <tr><td>การนำเสนอ</td><td>อธิบายการทำงานได้</td><td>อธิบายเหตุผลการเลือกอุปกรณ์</td><td>อภิปรายข้อจำกัดและความคลาดเคลื่อน</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="formulas">
+      <div class="block-head">
+        <span class="eyebrow">สูตร</span>
+        <h2>สูตรที่ใช้บ่อยในโปรเจคไฟฟ้า</h2>
+        <p>เก็บไว้ใช้ตอนคำนวณบทที่ 3 และตอบคำถามกรรมการ</p>
+      </div>
+      <div class="formulas">
+        <div class="formula"><h4>กฎของโอห์ม</h4><span class="eq">V = I × R</span><p>แรงดัน (V) เท่ากับกระแส (A) คูณความต้านทาน (Ω)</p></div>
+        <div class="formula"><h4>กำลังไฟฟ้า 1 เฟส</h4><span class="eq">P = V × I × PF</span><p>โหลดตัวต้านทานล้วน PF = 1 มอเตอร์ทั่วไปประมาณ 0.8</p></div>
+        <div class="formula"><h4>กำลังไฟฟ้า 3 เฟส</h4><span class="eq">P = √3 × V<sub>L</sub> × I<sub>L</sub> × PF</span><p>V<sub>L</sub> คือแรงดันระหว่างสาย ในไทยใช้ 380–400 V</p></div>
+        <div class="formula"><h4>พลังงานไฟฟ้า (หน่วย)</h4><span class="eq">kWh = W × ชม. ÷ 1000</span><p>1 หน่วยค่าไฟ = 1 kWh</p></div>
+        <div class="formula"><h4>ความจุแบตเตอรี่</h4><span class="eq">Wh = V × Ah</span><p>แบต 12 V 100 Ah เก็บพลังงานได้ 1,200 Wh</p></div>
+        <div class="formula"><h4>ขนาดแผงโซลาร์</h4><span class="eq">W<sub>แผง</sub> = Wh ÷ ชม.แดด ÷ 0.8</span><p>ไทยมีแดดเต็มที่ประมาณ 4–5 ชั่วโมงต่อวัน 0.8 คือค่าเผื่อการสูญเสีย</p></div>
+        <div class="formula"><h4>แรงดันตกในสาย</h4><span class="eq">%Vd = (Vd ÷ V) × 100</span><p>ควรให้แรงดันตกไม่เกินประมาณ 3–5% ถ้าเกินให้เพิ่มขนาดสาย</p></div>
+        <div class="formula"><h4>ประสิทธิภาพ</h4><span class="eq">η = P<sub>out</sub> ÷ P<sub>in</sub> × 100</span><p>ใช้กับคอนเวอร์เตอร์ อินเวอร์เตอร์ และมอเตอร์</p></div>
+      </div>
+    </section>
+
+    <section class="block" id="calculator">
+      <div class="block-head">
+        <span class="eyebrow">เครื่องคำนวณ</span>
+        <h2>คำนวณระบบโซลาร์ Off-grid</h2>
+        <p>ใส่โหลดที่ต้องการใช้ แล้วดูขนาดแผง แบตเตอรี่ และชาร์จคอนโทรลเลอร์โดยประมาณ ใช้เป็นจุดเริ่มต้นของบทที่ 3</p>
+      </div>
+      <div class="calc">
+        <form id="solar" novalidate>
+          <div class="field"><label for="load">กำลังโหลดรวม</label><div class="inp"><input id="load" type="number" min="1" step="1" value="60" inputmode="decimal"><span class="unit">W</span></div></div>
+          <div class="field"><label for="hours">ใช้งานต่อวัน</label><div class="inp"><input id="hours" type="number" min="0.5" step="0.5" value="6" inputmode="decimal"><span class="unit">ชม.</span></div></div>
+          <div class="field"><label for="sun">ชั่วโมงแดดเต็มที่ <small>(ไทยประมาณ 4–5)</small></label><div class="inp"><input id="sun" type="number" min="1" step="0.5" value="4.5" inputmode="decimal"><span class="unit">ชม.</span></div></div>
+          <div class="field"><label for="volt">แรงดันระบบ</label><div class="inp"><select id="volt"><option value="12" selected>12 V</option><option value="24">24 V</option><option value="48">48 V</option></select></div></div>
+          <div class="field"><label for="batt">ชนิดแบตเตอรี่</label><div class="inp"><select id="batt"><option value="0.5">ตะกั่วกรด / AGM (ใช้ได้ 50%)</option><option value="0.8" selected>LiFePO4 (ใช้ได้ 80%)</option></select></div></div>
+          <div class="field"><label for="days">สำรองไฟเมื่อไม่มีแดด</label><div class="inp"><input id="days" type="number" min="1" step="1" value="1" inputmode="numeric"><span class="unit">วัน</span></div></div>
+        </form>
+        <div class="results" aria-live="polite">
+          <h3>ผลการคำนวณ</h3>
+          <div class="res"><span>พลังงานที่ใช้ต่อวัน</span><b id="r-wh">360<small>Wh</small></b></div>
+          <div class="res"><span>ขนาดแผงโซลาร์รวม</span><b id="r-pv">100<small>W</small></b></div>
+          <div class="res"><span>ความจุแบตเตอรี่</span><b id="r-ah">38<small>Ah</small></b></div>
+          <div class="res"><span>ชาร์จคอนโทรลเลอร์</span><b id="r-cc">11<small>A</small></b></div>
+          <p class="note">สูตร: แผง = Wh ÷ ชม.แดด ÷ 0.8 · แบต = Wh × วันสำรอง ÷ แรงดัน ÷ ระดับการใช้งานแบต · คอนโทรลเลอร์ = W แผง ÷ แรงดัน × 1.25 ผลนี้เป็นค่าประมาณ ให้เลือกอุปกรณ์ขนาดถัดไปที่มีขาย</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="questions">
+      <div class="block-head">
+        <span class="eyebrow">เตรียมสอบ</span>
+        <h2>คำถามที่กรรมการชอบถาม</h2>
+        <p>เตรียมคำตอบของงานตัวเองไว้ทุกข้อ ซ้อมพูดให้จบใน 1 นาที</p>
+      </div>
+      <div class="qa">
+        <div class="q"><h3>ทำไมเลือกอุปกรณ์ตัวนี้ ไม่ใช้ตัวอื่น</h3><p>ตอบด้วยตัวเลขจากการคำนวณ เช่น "โหลด 5 A จึงเลือกรีเลย์ 10 A เผื่อไว้สองเท่า"</p></div>
+        <div class="q"><h3>ถ้าไฟดับหรืออุปกรณ์เสีย ระบบจะเป็นอย่างไร</h3><p>อธิบายระบบป้องกันที่ใส่ไว้ เช่น ฟิวส์ เบรกเกอร์ RCD หรือการตัดการทำงานอัตโนมัติ</p></div>
+        <div class="q"><h3>ผลที่วัดได้ต่างจากที่คำนวณเพราะอะไร</h3><p>พูดถึงความสูญเสียในสาย ประสิทธิภาพอุปกรณ์ สภาพแดด หรือความคลาดเคลื่อนของเครื่องวัด</p></div>
+        <div class="q"><h3>ช่วยอธิบายวงจรส่วนนี้หน่อย</h3><p>กรรมการมักชี้จุดใดจุดหนึ่งในวงจร ทุกคนในกลุ่มต้องไล่การทำงานได้ตั้งแต่ต้นทางถึงโหลด</p></div>
+        <div class="q"><h3>ค่าใช้จ่ายเท่าไร คุ้มทุนเมื่อไร</h3><p>เตรียมงบรวม และคำนวณระยะคืนทุน = ค่าอุปกรณ์ ÷ ค่าไฟที่ประหยัดได้ต่อเดือน</p></div>
+        <div class="q"><h3>ถ้าพัฒนาต่อจะทำอะไรเพิ่ม</h3><p>ตอบให้เป็นรูปธรรม เช่น เพิ่มการแจ้งเตือนผ่านมือถือ หรือขยายกำลังให้ใช้กับโหลดใหญ่ขึ้น</p></div>
+      </div>
+    </section>
+
+    <section class="block" id="checklist">
+      <div class="block-head">
+        <span class="eyebrow">เช็กลิสต์</span>
+        <h2>เช็กลิสต์ก่อนวันสอบ</h2>
+        <p>ติ๊กไปทีละข้อ เบราว์เซอร์จะจำไว้ให้ในเครื่องนี้</p>
+      </div>
+      <div class="check-wrap">
+        <div class="check-top">
+          <span>เสร็จแล้ว <b id="done-count">0</b> จาก <b id="total-count">12</b> ข้อ</span>
+          <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+          <button class="reset" id="reset" type="button">ล้างทั้งหมด</button>
+        </div>
+        <ul class="checks" id="checks">
+          <li><label><input type="checkbox" id="c1"><span>ชิ้นงานทำงานได้ครบตามวัตถุประสงค์ทุกข้อ</span></label></li>
+          <li><label><input type="checkbox" id="c2"><span>ทดสอบสาธิตจริงแล้วอย่างน้อย 2 รอบ</span></label></li>
+          <li><label><input type="checkbox" id="c3"><span>มีฟิวส์ เบรกเกอร์ และสายดินครบ</span></label></li>
+          <li><label><input type="checkbox" id="c4"><span>ติดป้ายสายและอุปกรณ์ทุกจุด</span></label></li>
+          <li><label><input type="checkbox" id="c5"><span>ตารางผลการทดลองครบ มีค่าเฉลี่ย</span></label></li>
+          <li><label><input type="checkbox" id="c6"><span>เล่มรายงานครบ 5 บท พร้อมบรรณานุกรม</span></label></li>
+          <li><label><input type="checkbox" id="c7"><span>สไลด์นำเสนอ 10–15 หน้า</span></label></li>
+          <li><label><input type="checkbox" id="c8"><span>ทุกคนในกลุ่มอธิบายวงจรได้</span></label></li>
+          <li><label><input type="checkbox" id="c9"><span>ซ้อมตอบคำถามกรรมการแล้ว</span></label></li>
+          <li><label><input type="checkbox" id="c10"><span>เตรียมอะไหล่สำรอง เช่น ฟิวส์ สาย และแบตที่ชาร์จเต็ม</span></label></li>
+          <li><label><input type="checkbox" id="c11"><span>มีคลิปวิดีโอการทำงาน เผื่อสาธิตสดไม่ได้</span></label></li>
+          <li><label><input type="checkbox" id="c12"><span>พิมพ์เล่มและเข้าเล่มตามรูปแบบของสถาบัน</span></label></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" id="upcoming">
+      <div class="block-head">
+        <span class="eyebrow">บทความ</span>
+        <h2>บทความที่กำลังจะมา</h2>
+      </div>
+      <div class="upcoming">
+        <div class="post"><small>PV-01 · โซลาร์เซลล์</small><b>ทำปั๊มน้ำโซลาร์ทีละขั้น พร้อมรายการอุปกรณ์</b><span class="soon">เร็ว ๆ นี้</span></div>
+        <div class="post"><small>IOT-02 · IoT</small><b>ส่งค่ามิเตอร์ไฟจาก ESP32 เข้า LINE</b><span class="soon">เร็ว ๆ นี้</span></div>
+        <div class="post"><small>MC-03 · PLC</small><b>เขียน Ladder สายพานคัดแยกสำหรับมือใหม่</b><span class="soon">เร็ว ๆ นี้</span></div>
+        <div class="post"><small>PE-07 · ป.ตรี</small><b>ออกแบบ Boost Converter จากสมการถึงบอร์ดจริง</b><span class="soon">เร็ว ๆ นี้</span></div>
+      </div>
+    </section>
+
+    <div class="cta">
+      <div><h2>ติดตรงไหน ทักมาถามได้</h2><p>ส่งหัวข้อหรือวงจรที่ติดปัญหามาทางไลน์ ปรึกษาเบื้องต้นฟรี</p></div>
+      <a class="btn btn-copper" href="index.html#contact">ปรึกษาฟรีทางไลน์ →</a>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div class="rail"><span>© 2569 TMAT Electrical Project Studio</span><span><a href="index.html">หน้าแรก</a> · <a href="learn.html">คลังความรู้</a></span></div>
+</footer>
+
+<a class="fab" href="index.html#contact">LINE ปรึกษาฟรี</a>
+
+<script>
+/* solar calculator */
+(function () {
+  var ids = ['load', 'hours', 'sun', 'volt', 'batt', 'days'];
+  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) && v > 0 ? v : 0; }
+  function fmt(n) { return Math.ceil(n).toLocaleString('th-TH'); }
+  function set(id, val, unit) { document.getElementById(id).innerHTML = val + '<small>' + unit + '</small>'; }
+  function calc() {
+    var wh = num('load') * num('hours'), sun = num('sun'), v = num('volt'), dod = num('batt'), days = num('days');
+    var pv = sun ? wh / sun / 0.8 : 0;
+    var ah = v && dod ? wh * days / v / dod : 0;
+    var cc = v ? pv / v * 1.25 : 0;
+    set('r-wh', fmt(wh), 'Wh'); set('r-pv', fmt(pv), 'W'); set('r-ah', fmt(ah), 'Ah'); set('r-cc', fmt(cc), 'A');
+  }
+  ids.forEach(function (id) { document.getElementById(id).addEventListener('input', calc); });
+  document.getElementById('solar').addEventListener('submit', function (e) { e.preventDefault(); });
+  calc();
+})();
+
+/* checklist with per-browser memory */
+(function () {
+  var KEY = 'tmat-checklist', boxes = Array.prototype.slice.call(document.querySelectorAll('#checks input'));
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+  function update() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById('done-count').textContent = done;
+    document.getElementById('total-count').textContent = boxes.length;
+    document.getElementById('meter').style.width = (done / boxes.length * 100) + '%';
+  }
+  function save() {
+    var s = {}; boxes.forEach(function (b) { s[b.id] = b.checked; });
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  boxes.forEach(function (b) { b.checked = !!saved[b.id]; b.addEventListener('change', function () { save(); update(); }); });
+  document.getElementById('reset').addEventListener('click', function () { boxes.forEach(function (b) { b.checked = false; }); save(); update(); });
+  update();
+})();
+
+/* highlight current section in the table of contents */
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id); });
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  links.forEach(function (a) { var s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
+})();
+</script>
+</body>
+</html>
