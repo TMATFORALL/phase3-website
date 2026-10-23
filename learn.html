@@ -205,6 +205,7 @@ footer a { color: var(--muted); }
     <h1>ทำโปรเจคไฟฟ้า<br><span class="copper-text">ตั้งแต่เลือกหัวข้อจนสอบผ่าน</span></h1>
     <p>แนวทางที่เราใช้สอนนักศึกษาจริง รวมขั้นตอนทำงาน โครงสร้างเล่มรายงาน สูตรที่ใช้บ่อย เครื่องคำนวณโซลาร์ และคำถามที่กรรมการชอบถาม ใช้ได้ทั้ง ปวช. ปวส. และปริญญาตรี</p>
     <div class="chips">
+      <a href="#upcoming">บทความ</a>
       <a href="#roadmap">6 ขั้นตอนทำโปรเจค</a>
       <a href="#report">โครงสร้างเล่ม 5 บท</a>
       <a href="#formulas">สูตรที่ใช้บ่อย</a>
@@ -218,16 +219,30 @@ footer a { color: var(--muted); }
 <div class="rail layout">
   <nav class="toc" aria-label="สารบัญ">
     <p>สารบัญ</p>
+    <a href="#upcoming">บทความ</a>
     <a href="#roadmap">ขั้นตอนทำโปรเจค</a>
     <a href="#report">โครงสร้างเล่มรายงาน</a>
     <a href="#formulas">สูตรที่ใช้บ่อย</a>
     <a href="#calculator">คำนวณระบบโซลาร์</a>
     <a href="#questions">คำถามกรรมการ</a>
     <a href="#checklist">เช็กลิสต์ก่อนสอบ</a>
-    <a href="#upcoming">บทความถัดไป</a>
   </nav>
 
   <main class="content">
+
+    <section class="block" id="upcoming">
+      <div class="block-head">
+        <span class="eyebrow">บทความ</span>
+        <h2>บทความ</h2>
+        <p>บทความสอนทำโปรเจคทีละขั้น พร้อมรายการอุปกรณ์และวงจร</p>
+      </div>
+      <div class="upcoming">
+        <div class="post"><small>PV-01 · โซลาร์เซลล์</small><b>ทำปั๊มน้ำโซลาร์ทีละขั้น พร้อมรายการอุปกรณ์</b><span class="soon">เร็ว ๆ นี้</span></div>
+        <div class="post"><small>IOT-02 · IoT</small><b>ส่งค่ามิเตอร์ไฟจาก ESP32 เข้า LINE</b><span class="soon">เร็ว ๆ นี้</span></div>
+        <div class="post"><small>MC-03 · PLC</small><b>เขียน Ladder สายพานคัดแยกสำหรับมือใหม่</b><span class="soon">เร็ว ๆ นี้</span></div>
+        <div class="post"><small>PE-07 · ป.ตรี</small><b>ออกแบบ Boost Converter จากสมการถึงบอร์ดจริง</b><span class="soon">เร็ว ๆ นี้</span></div>
+      </div>
+    </section>
 
     <section class="block" id="roadmap">
       <div class="block-head">
@@ -409,19 +424,6 @@ footer a { color: var(--muted); }
           <li><label><input type="checkbox" id="c11"><span>มีคลิปวิดีโอการทำงาน เผื่อสาธิตสดไม่ได้</span></label></li>
           <li><label><input type="checkbox" id="c12"><span>พิมพ์เล่มและเข้าเล่มตามรูปแบบของสถาบัน</span></label></li>
         </ul>
-      </div>
-    </section>
-
-    <section class="block" id="upcoming">
-      <div class="block-head">
-        <span class="eyebrow">บทความ</span>
-        <h2>บทความที่กำลังจะมา</h2>
-      </div>
-      <div class="upcoming">
-        <div class="post"><small>PV-01 · โซลาร์เซลล์</small><b>ทำปั๊มน้ำโซลาร์ทีละขั้น พร้อมรายการอุปกรณ์</b><span class="soon">เร็ว ๆ นี้</span></div>
-        <div class="post"><small>IOT-02 · IoT</small><b>ส่งค่ามิเตอร์ไฟจาก ESP32 เข้า LINE</b><span class="soon">เร็ว ๆ นี้</span></div>
-        <div class="post"><small>MC-03 · PLC</small><b>เขียน Ladder สายพานคัดแยกสำหรับมือใหม่</b><span class="soon">เร็ว ๆ นี้</span></div>
-        <div class="post"><small>PE-07 · ป.ตรี</small><b>ออกแบบ Boost Converter จากสมการถึงบอร์ดจริง</b><span class="soon">เร็ว ๆ นี้</span></div>
       </div>
     </section>
 
