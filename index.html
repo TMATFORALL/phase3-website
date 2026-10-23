@@ -231,8 +231,19 @@ section { padding-block: clamp(72px, 10vw, 120px); }
 /* packages */
 .pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
 @media (max-width: 960px) { .pkgs { grid-template-columns: 1fr; max-width: 520px; } }
-.pkg { background: var(--bg-2); border: 1px solid var(--line); padding: 36px 32px; display: flex; flex-direction: column; gap: 20px; position: relative; }
-.pkg.featured { background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(160deg, var(--copper-hi), var(--copper-lo) 60%, var(--line)) border-box; border: 1px solid transparent; }
+.pkg { background: var(--bg-2); border: 1px solid var(--line); padding: 36px 32px; display: flex; flex-direction: column; gap: 20px; position: relative; transition: transform .3s ease, background .3s ease; }
+.pkg.featured { background: var(--surface); }
+/* copper frame: sits on the featured card at rest, moves to whichever card the mouse is on and follows the pointer */
+.pkg::before { content: ""; position: absolute; inset: -1px; padding: 1px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(240px circle at var(--mx, 30%) var(--my, 0%), var(--copper-hi), var(--copper) 40%, transparent 75%), linear-gradient(160deg, var(--copper-lo), var(--line) 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+.pkg::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; background: radial-gradient(320px circle at var(--mx, 30%) var(--my, 0%), rgba(212,137,90,.09), transparent 70%); }
+.pkg.featured::before { opacity: 1; }
+.pkgs:hover .pkg.featured:not(:hover)::before { opacity: 0; }
+.pkg:hover { background: var(--surface); transform: translateY(-4px); }
+.pkg:hover::before, .pkg:hover::after { opacity: 1; }
+.pkg > * { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .pkg, .pkg::before, .pkg::after { transition: none; } .pkg:hover { transform: none; } }
 .pkg .badge { position: absolute; top: -12px; left: 32px; background: linear-gradient(135deg, var(--copper-hi), var(--copper)); color: var(--on-copper); font-size: .74rem; font-weight: 600; padding: 3px 12px; font-family: var(--f-display); }
 .pkg .tier { font-family: var(--f-mono); font-size: .74rem; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
 .pkg h3 { font-size: 1.45rem; font-weight: 600; }
@@ -1029,6 +1040,16 @@ document.getElementById('copy-line').addEventListener('click', function () {
   build(); draw();
   var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { build(); if (reduce) draw(); }, 150); });
 })();
+</script>
+<script>
+/* package cards: copper frame follows the pointer */
+document.querySelectorAll('.pkg').forEach(function (card) {
+  card.addEventListener('pointermove', function (e) {
+    var r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 <script src="assets/cabinet3d.js"></script>
