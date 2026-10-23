@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="คลังความรู้ TMAT แนวทางทำโปรเจคไฟฟ้า ปวช. ปวส. ปริญญาตรี ตั้งแต่เลือกหัวข้อ เขียนเล่ม คำนวณ จนถึงสอบโครงงาน">
 <title>คลังความรู้ TMAT</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:image" content="https://tmatforall.github.io/phase3-website/assets/tmat-logo-original.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -51,6 +54,9 @@ header .rail { display: flex; align-items: center; justify-content: space-betwee
 .brand svg { width: 34px; height: 34px; flex: none; }
 .brand b { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; display: block; line-height: 1.1; }
 .brand small { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .14em; color: var(--muted); }
+.brand-logo { height: 34px; width: auto; display: block; }
+.brand-sub { display: block; line-height: 1.35 !important; padding-left: 12px; border-left: 1px solid var(--line); }
+@media (max-width: 480px) { .brand-sub { display: none !important; } }
 nav.top { display: flex; gap: 26px; }
 nav.top a { text-decoration: none; font-size: .93rem; color: var(--muted); }
 nav.top a:hover, nav.top a[aria-current] { color: var(--ink); }
@@ -180,8 +186,8 @@ footer a { color: var(--muted); }
 <header>
   <div class="rail">
     <a class="brand" href="index.html" aria-label="TMAT หน้าแรก">
-      <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="2" fill="none" stroke="var(--copper)" stroke-width="1.5"/><path d="M8 10h18M17 10v16" stroke="var(--copper)" stroke-width="2.5" stroke-linecap="round"/><circle cx="8" cy="10" r="2" fill="var(--copper-hi)"/><circle cx="26" cy="10" r="2" fill="var(--copper-hi)"/><circle cx="17" cy="26" r="2" fill="var(--copper-hi)"/></svg>
-      <span><b>TMAT</b><small>ELECTRICAL PROJECT STUDIO</small></span>
+      <img class="brand-logo" src="assets/logo-dark.png" alt="TMAT" width="144" height="36">
+      <small class="brand-sub">ELECTRICAL<br>PROJECT STUDIO</small>
     </a>
     <nav class="top" aria-label="เมนูหลัก">
       <a href="index.html">หน้าแรก</a>
