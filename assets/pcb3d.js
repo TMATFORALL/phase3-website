@@ -1,12 +1,16 @@
-/* TMAT — 3D PCB viewer: an IoT relay board that separates into its layers.
-   Drag to rotate, slider to explode, click a layer to isolate it. Needs global THREE. */
+/* TMAT — 3D PCB: an IoT relay board that separates into its layers as the
+   visitor scrolls through the steps beside it. Needs global THREE. */
 (function () {
   var stage = document.getElementById('pcb-stage');
   if (!stage) return;
+  var section = stage.closest('section');
   var canvas = document.getElementById('pcb3d');
   var labelsEl = document.getElementById('pcb-labels');
-  var slider = document.getElementById('pcb-explode');
-  var layerBtns = Array.prototype.slice.call(document.querySelectorAll('[data-layer]'));
+  var stepEls = Array.prototype.slice.call(section.querySelectorAll('.istep'));
+  var stepsBox = section.querySelector('.isteps');
+  var hint = document.getElementById('pcb-hint');
+  var bar = document.getElementById('pcb-bar');
+  var stepTag = document.getElementById('pcb-step');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!window.THREE) { stage.classList.add('no3d'); return; }
@@ -155,29 +159,18 @@
     d.el.innerHTML = '<b>' + d.n + '</b>' + d.t; labelsEl.appendChild(d.el);
   });
 
-  /* --- interaction state --- */
-  var explodeTarget = 0, explode = 0, focus = null, yaw = -0.6, pitch = 0.62, autoSpin = !reduce;
-  var dragging = false, lastX = 0, lastY = 0, w = 0, h = 0, visible = false, raf = 0, played = false;
+  /* --- scroll-driven state --- */
+  // which layers are in focus at each step (null = all)
+  var stepFocus = [null, ['parts'], ['silk', 'mask'], ['copper'], ['core', 'bottom']];
+  var target = 0, cur = 0, mouseX = 0, mouseY = 0, w = 0, h = 0, visible = false, raf = 0;
   var tmp = new THREE.Vector3();
+  function smooth(a, b, x) { var t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
 
-  function setFocus(name) {
-    focus = focus === name ? null : name;
-    layerBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.layer === focus); });
-    if (focus && explodeTarget < 0.6) { explodeTarget = 1; if (slider) slider.value = 100; }
-    kick();
+  function measure() {
+    var r = stepsBox.getBoundingClientRect();
+    var span = r.height - window.innerHeight * 0.6;
+    target = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / Math.max(1, span)));
   }
-  layerBtns.forEach(function (b) { b.addEventListener('click', function () { setFocus(b.dataset.layer); }); });
-  if (slider) slider.addEventListener('input', function () { explodeTarget = slider.value / 100; played = true; kick(); });
-
-  canvas.addEventListener('pointerdown', function (e) { dragging = true; autoSpin = false; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
-  canvas.addEventListener('pointermove', function (e) {
-    if (!dragging) return;
-    yaw -= (e.clientX - lastX) * 0.008;
-    pitch = Math.min(1.35, Math.max(0.15, pitch + (e.clientY - lastY) * 0.005));
-    lastX = e.clientX; lastY = e.clientY; kick();
-  });
-  ['pointerup', 'pointercancel'].forEach(function (ev) { canvas.addEventListener(ev, function () { dragging = false; }); });
-
   function resize() {
     var nw = stage.clientWidth, nh = stage.clientHeight;
     if (nw === w && nh === h) return;
@@ -187,44 +180,56 @@
 
   function frame() {
     raf = 0; resize();
-    explode += (explodeTarget - explode) * (reduce ? 1 : 0.07);
-    if (autoSpin && visible) yaw += 0.0025;
+    cur += (target - cur) * (reduce ? 1 : 0.08);
+    var p = cur;
+    var step = Math.min(4, Math.floor(p * 5 + 0.0001));
+    var focus = stepFocus[step];
+    var explode = smooth(0.12, 0.42, p);
+    var busy = false;
 
     Object.keys(layers).forEach(function (k) {
       var L = layers[k];
       L.position.y = L.userData.lift * explode;
-      var want = !focus || focus === k ? 1 : 0.12;
+      var want = !focus || focus.indexOf(k) >= 0 ? 1 : 0.14;
       L.userData.dim += (want - L.userData.dim) * 0.15;
+      if (Math.abs(L.userData.dim - want) > 0.01) busy = true;
       L.traverse(function (o) { if (o.material) o.material.opacity = (o.material.userData.op == null ? 1 : o.material.userData.op) * L.userData.dim; });
     });
 
-    var r = 5.2 + explode * 1.4;
+    var yaw = -0.75 + 0.9 * p + mouseX * 0.12;
+    var pitch = 0.78 - 0.22 * p + mouseY * 0.08;
+    var r = 5.0 + explode * 1.6;
     camera.position.set(Math.sin(yaw) * Math.cos(pitch) * r, Math.sin(pitch) * r + 0.2, Math.cos(yaw) * Math.cos(pitch) * r);
-    camera.lookAt(0, 0.35 + explode * 0.45, 0);
+    camera.lookAt(0, 0.3 + explode * 0.45, 0);
     renderer.render(scene, camera);
 
-    var showLabels = (!focus || focus === 'parts') && explode > 0.15;
+    var showLabels = step === 1 && layers.parts.userData.dim > 0.6;
     labelDefs.forEach(function (d) {
       parts[d.g].userData.top.getWorldPosition(tmp); tmp.project(camera);
       d.el.style.transform = 'translate(' + ((tmp.x + 1) / 2 * w) + 'px,' + ((1 - tmp.y) / 2 * h) + 'px) translate(-50%, calc(-100% - 14px))';
-      d.el.classList.toggle('on', showLabels && tmp.z < 1);
+      d.el.classList.toggle('on', showLabels);
     });
 
-    if (visible && (autoSpin || Math.abs(explodeTarget - explode) > 0.001 || Object.keys(layers).some(function (k) { var want = !focus || focus === k ? 1 : 0.12; return Math.abs(layers[k].userData.dim - want) > 0.01; }))) kick();
+    stepEls.forEach(function (el, i) { el.classList.toggle('active', i === step); });
+    if (stepTag) stepTag.textContent = '0' + (step + 1) + ' / 05';
+    if (bar) bar.style.width = (p * 100) + '%';
+    if (hint) hint.style.opacity = p < 0.03 ? 1 : 0;
+
+    if (visible && (busy || Math.abs(target - cur) > 0.0005)) kick();
   }
   function kick() { if (!raf) raf = requestAnimationFrame(frame); }
 
-  // play the explode once when the board first scrolls into view
+  window.addEventListener('scroll', function () { measure(); kick(); }, { passive: true });
+  window.addEventListener('resize', function () { measure(); kick(); });
+  stage.addEventListener('pointermove', function (e) {
+    if (reduce || e.pointerType !== 'mouse') return;
+    var r = stage.getBoundingClientRect();
+    mouseX = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    mouseY = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    kick();
+  });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (en) {
-      visible = en[0].isIntersecting;
-      if (visible && !played) {
-        played = true;
-        setTimeout(function () { explodeTarget = 0.75; if (slider) slider.value = 75; kick(); }, reduce ? 0 : 500);
-      }
-      if (visible) kick();
-    }, { threshold: 0.35 }).observe(stage);
-  } else { visible = true; explodeTarget = 0.75; }
-  window.addEventListener('resize', kick);
-  kick();
+    new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) { measure(); kick(); } }).observe(stage);
+  } else { visible = true; }
+  measure(); kick();
 })();

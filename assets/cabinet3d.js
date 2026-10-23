@@ -5,8 +5,9 @@
   if (!stage) return;
   var canvas = document.getElementById('cab3d');
   var labelsEl = document.getElementById('cab-labels');
-  var stepEls = Array.prototype.slice.call(document.querySelectorAll('.istep'));
-  var stepsBox = document.querySelector('.isteps');
+  var section = stage.closest('section');
+  var stepEls = Array.prototype.slice.call(section.querySelectorAll('.istep'));
+  var stepsBox = section.querySelector('.isteps');
   var hint = document.getElementById('cab-hint');
   var bar = document.getElementById('cab-bar');
   var stepTag = document.getElementById('cab-step');

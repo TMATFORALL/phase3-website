@@ -148,31 +148,6 @@ section { padding-block: clamp(72px, 10vw, 120px); }
   .cab-label { font-size: .7rem; padding: 3px 8px; }
 }
 
-/* PCB layer viewer */
-.pcb { border-bottom: 1px solid var(--line); }
-.pcb-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 48px; align-items: center; }
-.pcb-stage { height: min(620px, 78vh); min-height: 420px; }
-.pcb-stage canvas { cursor: grab; touch-action: pan-y; }
-.pcb-stage canvas:active { cursor: grabbing; }
-.pcb-copy { display: grid; gap: 18px; min-width: 0; }
-.pcb-copy > p { color: var(--muted); font-weight: 300; }
-.pcb-slider { display: flex; align-items: center; gap: 16px; border-block: 1px solid var(--line); padding-block: 14px; }
-.pcb-slider label { font-size: .9rem; white-space: nowrap; }
-.pcb-slider input { flex: 1; accent-color: var(--copper); }
-.pcb-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.pcb-layers button { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: grid; grid-template-columns: 14px 1fr; gap: 14px; align-items: center; padding: 10px 12px; border: 1px solid transparent; transition: background .2s, border-color .2s; }
-.pcb-layers button:hover { background: var(--bg-2); }
-.pcb-layers button:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: -2px; }
-.pcb-layers button[aria-pressed="true"] { border-color: var(--copper-lo); background: var(--surface); }
-.pcb-layers i { width: 14px; height: 14px; border-radius: 2px; }
-.pcb-layers b { display: block; font-weight: 500; font-size: .96rem; }
-.pcb-layers small { color: var(--muted); font-size: .82rem; }
-.pcb-tools { font-family: var(--f-mono); font-size: .76rem; letter-spacing: .04em; color: var(--muted) !important; }
-@media (max-width: 900px) {
-  .pcb-grid { grid-template-columns: 1fr; gap: 28px; }
-  .pcb-stage { height: 58vh; min-height: 340px; }
-}
-
 /* levels */
 .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
 .level { background: var(--bg); padding: 32px; display: grid; gap: 16px; align-content: start; min-width: 0; }
@@ -454,33 +429,50 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section id="pcb" class="pcb">
+  <section id="pcb" class="inside pcb">
     <div class="rail">
-      <div class="pcb-grid">
-        <div class="stage pcb-stage" id="pcb-stage">
-          <canvas id="pcb3d" aria-label="โมเดล 3 มิติของบอร์ดวงจร IoT ที่แยกออกเป็นชั้น ลากเพื่อหมุนได้" role="img"></canvas>
-          <div class="cab-labels" id="pcb-labels"></div>
-          <span class="hint" style="opacity:1">ลากเพื่อหมุนบอร์ด</span>
-          <div class="hud"><span>TMAT IoT RELAY · REV 1</span><span class="bar"></span><span>2 LAYER · 1.6 MM</span></div>
-          <div class="fallback">อุปกรณ์นี้แสดงโมเดล 3 มิติไม่ได้ อ่านรายละเอียดแต่ละชั้นได้ด้านข้าง</div>
-        </div>
-        <div class="pcb-copy">
-          <span class="eyebrow">บอร์ดวงจร PCB</span>
-          <h2>ออกแบบ PCB เอง ตั้งแต่วงจรถึงบอร์ดจริง</h2>
-          <p>งาน IoT และอิเล็กทรอนิกส์กำลังของเราไม่ต่อสายบนบอร์ดทดลอง เราสอนวาดวงจร วางลายทองแดง และสั่งผลิตบอร์ดจริง แตะชื่อชั้นเพื่อดูทีละชั้น</p>
-          <div class="pcb-slider">
-            <label for="pcb-explode">แยกชั้น</label>
-            <input id="pcb-explode" type="range" min="0" max="100" value="0">
+      <div class="sec-head">
+        <span class="eyebrow">บอร์ดวงจร PCB</span>
+        <h2>ออกแบบ PCB เอง ตั้งแต่วงจรถึงบอร์ดจริง</h2>
+        <p>เลื่อนลงเพื่อแยกบอร์ด IoT ออกทีละชั้น งาน IoT และอิเล็กทรอนิกส์กำลังของเราสอนวาดวงจร วางลายทองแดง และสั่งผลิตบอร์ดจริง</p>
+      </div>
+      <div class="iscroll">
+        <div class="stage-wrap">
+          <div class="stage" id="pcb-stage">
+            <canvas id="pcb3d" aria-label="โมเดล 3 มิติของบอร์ดวงจร IoT ที่แยกออกเป็นชั้นตามการเลื่อนหน้าจอ" role="img"></canvas>
+            <div class="cab-labels" id="pcb-labels"></div>
+            <span class="hint" id="pcb-hint">เลื่อนลงเพื่อแยกชั้น ↓</span>
+            <div class="hud"><span id="pcb-step">01 / 05</span><span class="bar"><i id="pcb-bar"></i></span><span>2 LAYER · 1.6 MM</span></div>
+            <div class="fallback">อุปกรณ์นี้แสดงโมเดล 3 มิติไม่ได้ อ่านรายละเอียดแต่ละชั้นได้ด้านข้าง</div>
           </div>
-          <ul class="pcb-layers">
-            <li><button type="button" data-layer="parts" aria-pressed="false"><i style="background:#2f6fb5"></i><span><b>ชิ้นส่วนอิเล็กทรอนิกส์</b><small>ESP32, รีเลย์, เรกูเลเตอร์, ตัวเก็บประจุ</small></span></button></li>
-            <li><button type="button" data-layer="silk" aria-pressed="false"><i style="background:#f2f2ee"></i><span><b>ซิลค์สกรีน</b><small>ตัวหนังสือและกรอบตำแหน่งอุปกรณ์</small></span></button></li>
-            <li><button type="button" data-layer="mask" aria-pressed="false"><i style="background:#111417;outline:1px solid #3a444d"></i><span><b>โซลเดอร์มาสก์</b><small>ชั้นเคลือบกันลายทองแดงลัดวงจร</small></span></button></li>
-            <li><button type="button" data-layer="copper" aria-pressed="false"><i style="background:#d4895a"></i><span><b>ลายทองแดงด้านบน</b><small>เส้นสัญญาณและแพดบัดกรี</small></span></button></li>
-            <li><button type="button" data-layer="core" aria-pressed="false"><i style="background:#c9b77a"></i><span><b>แผ่นฐาน FR-4</b><small>ไฟเบอร์กลาสหนา 1.6 มม.</small></span></button></li>
-            <li><button type="button" data-layer="bottom" aria-pressed="false"><i style="background:#b06a3e"></i><span><b>ทองแดงด้านล่าง</b><small>กราวด์เพลนเต็มแผ่น</small></span></button></li>
-          </ul>
-          <p class="pcb-tools">ใช้โปรแกรม KiCad หรือ EasyEDA · สั่งผลิตได้ภายใน 7–10 วัน</p>
+        </div>
+        <div class="isteps">
+          <div class="istep active"><div>
+            <span class="no">01 / 05 · บอร์ดสำเร็จ</span>
+            <h3>บอร์ด IoT ควบคุมรีเลย์ผ่าน Wi-Fi</h3>
+            <p>บอร์ดขนาดเท่าฝ่ามือที่สั่งเปิดปิดเครื่องใช้ไฟฟ้าจากมือถือได้ ออกแบบเองทั้งแผ่น แล้วสั่งโรงงานผลิตจริง</p>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">02 / 05 · ชิ้นส่วน</span>
+            <h3>ชิ้นส่วนอิเล็กทรอนิกส์</h3>
+            <ul><li>ESP32 สมองของบอร์ด เชื่อม Wi-Fi</li><li>รีเลย์ 5 V ตัดต่อไฟ 220 V</li><li>เรกูเลเตอร์ลดไฟเป็น 3.3 V และตัวเก็บประจุกรองไฟ</li><li>เทอร์มินัลสกรูสำหรับต่อสายโหลด</li></ul>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">03 / 05 · ชั้นเคลือบ</span>
+            <h3>ซิลค์สกรีนและโซลเดอร์มาสก์</h3>
+            <ul><li>ซิลค์สกรีนสีขาว บอกชื่อและตำแหน่งอุปกรณ์</li><li>โซลเดอร์มาสก์สีดำ เคลือบลายทองแดงกันลัดวงจรและกันสนิม</li></ul>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">04 / 05 · ลายทองแดง</span>
+            <h3>ลายทองแดงด้านบน</h3>
+            <p>เส้นทองแดงเชื่อมขาอุปกรณ์แทนสายไฟ เส้นที่จ่ายกระแสรีเลย์ต้องกว้างกว่าเส้นสัญญาณ เราสอนคำนวณความกว้างเส้นจากกระแสที่ไหลจริง</p>
+          </div></div>
+          <div class="istep"><div>
+            <span class="no">05 / 05 · แผ่นฐาน</span>
+            <h3>แผ่นฐาน FR-4 และทองแดงด้านล่าง</h3>
+            <p>FR-4 คือไฟเบอร์กลาสหนา 1.6 มม. ด้านล่างเป็นกราวด์เพลนเต็มแผ่นช่วยลดสัญญาณรบกวน ออกแบบด้วย KiCad หรือ EasyEDA และได้บอร์ดจริงใน 7–10 วัน</p>
+            <div><a class="btn btn-copper" href="#contact">ปรึกษางาน PCB <span class="arrow">→</span></a></div>
+          </div></div>
         </div>
       </div>
     </div>
