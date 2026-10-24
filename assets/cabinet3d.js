@@ -19,7 +19,7 @@
   var renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); }
   catch (e) { fail(); return; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 900px)').matches ? 1.5 : 1.75));
 
   var scene = new THREE.Scene();
   K.setup(renderer, scene);
@@ -28,7 +28,7 @@
   scene.add(new THREE.HemisphereLight(0xdfe8f0, 0x0b1015, 0.25));
   var key = new THREE.DirectionalLight(0xffffff, 1.6);
   key.position.set(3.5, 6, 7); key.castShadow = true;
-  key.shadow.mapSize.set(1536, 1536); key.shadow.bias = -0.0006; key.shadow.normalBias = 0.02;
+  key.shadow.mapSize.set(window.matchMedia('(max-width: 900px)').matches ? 1024 : 1536, window.matchMedia('(max-width: 900px)').matches ? 1024 : 1536); key.shadow.bias = -0.0006; key.shadow.normalBias = 0.02;
   var sc = key.shadow.camera; sc.left = -3; sc.right = 3; sc.top = 3; sc.bottom = -3; sc.near = 1; sc.far = 20;
   scene.add(key);
   var rim = new THREE.DirectionalLight(0xf3c29a, 0.7); rim.position.set(-6, 3, -4); scene.add(rim);
@@ -301,15 +301,38 @@
   var target = 0, cur = 0, mouseX = 0, mouseY = 0, visible = false, raf = 0, w = 0, h = 0;
   var tmp = new THREE.Vector3();
 
-  // Phones resize the viewport when the address bar hides on scroll; keep one
-  // height until the width changes (rotation) so the animation does not jump.
+  // Desktop: progress follows page scroll past the steps.
+  // Phones: the steps are a swipeable row, so progress follows the card in view.
+  var phone = window.matchMedia('(max-width: 900px)');
   var viewW = window.innerWidth, viewH = document.documentElement.clientHeight;
+  var dots = [];
+  (function () {
+    var wrap = document.createElement('div'); wrap.className = 'swipe-dots';
+    stepEls.forEach(function (el, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'ขั้นที่ ' + (i + 1));
+      b.addEventListener('click', function () { stepsBox.scrollTo({ left: el.offsetLeft - stepEls[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' }); });
+      wrap.appendChild(b); dots.push(b);
+    });
+    stepsBox.parentNode.insertBefore(wrap, stepsBox.nextSibling);
+  })();
+  function phoneStep() {
+    var pitch = stepEls.length > 1 ? stepEls[1].offsetLeft - stepEls[0].offsetLeft : 1;
+    return Math.max(0, Math.min(stepEls.length - 1, Math.round(stepsBox.scrollLeft / Math.max(1, pitch))));
+  }
   function measure() {
+    if (phone.matches) {
+      var i = phoneStep(), n = stepEls.length;
+      target = i === 0 ? 0 : (i === n - 1 ? 0.99 : (i + 0.5) / n);
+      dots.forEach(function (d, k) { d.setAttribute('aria-current', k === i); });
+      return;
+    }
     if (window.innerWidth !== viewW) { viewW = window.innerWidth; viewH = document.documentElement.clientHeight; }
     var r = stepsBox.getBoundingClientRect();
     var span = r.height - viewH * 0.6;
     target = Math.min(1, Math.max(0, (viewH * 0.5 - r.top) / Math.max(1, span)));
   }
+  stepsBox.addEventListener('scroll', function () { measure(); kick(); }, { passive: true });
+  if (phone.matches && hint) hint.textContent = 'ปัดการ์ดด้านล่างเพื่อดูทีละขั้น →';
   function resize() {
     var nw = stage.clientWidth, nh = stage.clientHeight;
     if (nw === w && nh === h) return;
@@ -369,7 +392,7 @@
   }
   function kick() { if (!raf) raf = requestAnimationFrame(frame); }
 
-  window.addEventListener('scroll', function () { measure(); kick(); }, { passive: true });
+  window.addEventListener('scroll', function () { if (!phone.matches) { measure(); kick(); } }, { passive: true });
   window.addEventListener('resize', function () { if (window.innerWidth !== viewW) { measure(); kick(); } });
   stage.addEventListener('pointermove', function (e) {
     if (reduce || e.pointerType !== 'mouse') return;
