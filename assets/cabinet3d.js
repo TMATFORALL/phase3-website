@@ -301,10 +301,14 @@
   var target = 0, cur = 0, mouseX = 0, mouseY = 0, visible = false, raf = 0, w = 0, h = 0;
   var tmp = new THREE.Vector3();
 
+  // Phones resize the viewport when the address bar hides on scroll; keep one
+  // height until the width changes (rotation) so the animation does not jump.
+  var viewW = window.innerWidth, viewH = document.documentElement.clientHeight;
   function measure() {
+    if (window.innerWidth !== viewW) { viewW = window.innerWidth; viewH = document.documentElement.clientHeight; }
     var r = stepsBox.getBoundingClientRect();
-    var span = r.height - window.innerHeight * 0.6;
-    target = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / Math.max(1, span)));
+    var span = r.height - viewH * 0.6;
+    target = Math.min(1, Math.max(0, (viewH * 0.5 - r.top) / Math.max(1, span)));
   }
   function resize() {
     var nw = stage.clientWidth, nh = stage.clientHeight;
@@ -366,7 +370,7 @@
   function kick() { if (!raf) raf = requestAnimationFrame(frame); }
 
   window.addEventListener('scroll', function () { measure(); kick(); }, { passive: true });
-  window.addEventListener('resize', function () { measure(); kick(); });
+  window.addEventListener('resize', function () { if (window.innerWidth !== viewW) { measure(); kick(); } });
   stage.addEventListener('pointermove', function (e) {
     if (reduce || e.pointerType !== 'mouse') return;
     var r = stage.getBoundingClientRect();
