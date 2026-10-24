@@ -196,6 +196,7 @@ section { padding-block: clamp(72px, 10vw, 120px); }
 .panel-art svg { width: min(100%, 320px); height: auto; }
 .panel-art .tagline { position: absolute; left: 20px; bottom: 16px; font-family: var(--f-mono); font-size: .72rem; color: var(--muted); letter-spacing: .08em; }
 .panel-art.photo { padding: 0; place-items: stretch; }
+.ad-tag { position: absolute; top: 10px; right: 10px; z-index: 2; font-size: .68rem; color: var(--ink); background: rgba(11,16,21,.72); border: 1px solid var(--line); padding: 2px 8px; pointer-events: none; }
 .panel-art.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 52% 42%; }
 .panel-art.photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(11,16,21,.85)); pointer-events: none; }
 .panel-art.photo .tagline { z-index: 1; color: var(--ink); }
@@ -585,7 +586,7 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
         <div class="panel" role="tabpanel" id="p-pv" aria-labelledby="t-pv">
           <div class="panel-art photo">
-            <img src="assets/cat-solar.jpg" alt="ชุด Solar Tracker แผงโซลาร์บนฐานหมุน พร้อมชาร์จคอนโทรลเลอร์และแบตเตอรี่ 12 V บนโต๊ะปฏิบัติการ" width="1400" height="565" loading="lazy" decoding="async">
+            <img src="assets/cat-solar.jpg" alt="ชุด Solar Tracker แผงโซลาร์บนฐานหมุน พร้อมชาร์จคอนโทรลเลอร์และแบตเตอรี่ 12 V บนโต๊ะปฏิบัติการ" width="1400" height="565" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">PV ARRAY → CHARGE CTRL → BATTERY</span>
           </div>
           <div class="panel-body">
@@ -602,14 +603,8 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
         </div>
 
         <div class="panel" role="tabpanel" id="p-iot" aria-labelledby="t-iot" hidden>
-          <div class="panel-art">
-            <svg viewBox="0 0 300 220" aria-hidden="true">
-              <rect x="110" y="70" width="80" height="80" rx="4" class="art"/><rect x="130" y="90" width="40" height="40" class="art-dim"/>
-              <path class="art" d="M120 70v-14M140 70v-14M160 70v-14M180 70v-14M120 150v14M140 150v14M160 150v14M180 150v14M110 90h-14M110 110h-14M110 130h-14M190 90h14M190 110h14M190 130h14"/>
-              <path class="art" d="M232 60a24 24 0 0 1 24 24M232 44a40 40 0 0 1 40 40" /><circle cx="232" cy="84" r="4" class="art-fill"/>
-              <rect x="30" y="150" width="46" height="62" rx="6" class="art"/><path class="art-dim" d="M38 164h30M38 176h22M38 188h26"/>
-              <path class="art" d="M76 180 C 100 180, 100 150, 120 150" stroke-dasharray="4 6"/>
-            </svg>
+          <div class="panel-art photo">
+            <img src="assets/cat-iot.jpg" alt="ESP32 บนบอร์ดทดลอง ต่อเซนเซอร์อุณหภูมิ รีเลย์ และแอปมือถือแสดงค่า" width="1200" height="926" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">ESP32 → WI-FI → DASHBOARD / LINE</span>
           </div>
           <div class="panel-body">
@@ -626,15 +621,8 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
         </div>
 
         <div class="panel" role="tabpanel" id="p-mc" aria-labelledby="t-mc" hidden>
-          <div class="panel-art">
-            <svg viewBox="0 0 300 220" aria-hidden="true">
-              <circle cx="110" cy="120" r="54" class="art"/><circle cx="110" cy="120" r="34" class="art-dim"/><text x="110" y="128" text-anchor="middle" fill="var(--copper)" font-family="IBM Plex Mono, monospace" font-size="22">M</text>
-              <text x="110" y="150" text-anchor="middle" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">3~</text>
-              <path class="art" d="M80 66 V30 M110 66 V30 M140 66 V30"/>
-              <rect x="200" y="60" width="70" height="110" rx="2" class="art"/><path class="art-dim" d="M210 80h50M210 96h50M210 112h50"/>
-              <circle cx="222" cy="145" r="7" class="art"/><circle cx="248" cy="145" r="7" class="art-fill"/>
-              <path class="art" d="M164 120 H200" stroke-dasharray="4 6"/>
-            </svg>
+          <div class="panel-art photo">
+            <img src="assets/cat-motor.jpg" alt="มอเตอร์ 3 เฟส ต่อกับตู้ PLC และอินเวอร์เตอร์บนโต๊ะปฏิบัติการ" width="1200" height="848" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">PLC / VFD → 3-PHASE INDUCTION MOTOR</span>
           </div>
           <div class="panel-body">
@@ -651,14 +639,8 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
         </div>
 
         <div class="panel" role="tabpanel" id="p-tr" aria-labelledby="t-tr" hidden>
-          <div class="panel-art">
-            <svg viewBox="0 0 300 220" aria-hidden="true">
-              <rect x="50" y="30" width="200" height="160" rx="3" class="art"/>
-              <path class="art-dim" d="M50 70h200M50 150h200"/>
-              <rect x="70" y="42" width="14" height="20" class="art"/><rect x="92" y="42" width="14" height="20" class="art"/><rect x="114" y="42" width="14" height="20" class="art"/><rect x="136" y="42" width="14" height="20" class="art"/><rect x="190" y="42" width="40" height="20" class="art-fill" opacity=".8"/>
-              <path class="art" d="M77 62 V100 H160 M99 62 V115 H180 M121 62 V130 H200"/>
-              <circle cx="80" cy="170" r="7" class="art"/><circle cx="110" cy="170" r="7" class="art"/><circle cx="140" cy="170" r="7" class="art"/><rect x="180" y="162" width="50" height="16" class="art"/>
-            </svg>
+          <div class="panel-art photo">
+            <img src="assets/cat-trainer.jpg" alt="ชุดฝึกติดตั้งไฟฟ้าในอาคาร มีตู้คอนซูมเมอร์ ท่อร้อยสาย หลอดไฟ สวิตช์ และเต้ารับ" width="1200" height="848" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">CONSUMER UNIT · RCBO · TRAINER BOARD</span>
           </div>
           <div class="panel-body">
@@ -675,13 +657,8 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
         </div>
 
         <div class="panel" role="tabpanel" id="p-ev" aria-labelledby="t-ev" hidden>
-          <div class="panel-art">
-            <svg viewBox="0 0 300 220" aria-hidden="true">
-              <circle cx="70" cy="150" r="40" class="art"/><circle cx="230" cy="150" r="40" class="art"/><circle cx="70" cy="150" r="8" class="art-fill"/><circle cx="230" cy="150" r="8" class="art"/>
-              <path class="art" d="M70 150 L120 90 H190 L230 150 M120 90 L150 150 H70 M190 90 L200 60 H220 M110 80 H135"/>
-              <rect x="126" y="100" width="44" height="24" rx="2" class="art-fill" opacity=".85"/>
-              <path class="art-dim" d="M40 205 H260"/>
-            </svg>
+          <div class="panel-art photo">
+            <img src="assets/cat-ev.jpg" alt="จักรยานไฟฟ้าดัดแปลง มอเตอร์ดุมล้อหลัง แบตเตอรี่ และกล่องควบคุม" width="1200" height="848" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">48 V LiFePO4 · HUB MOTOR · BMS</span>
           </div>
           <div class="panel-body">
@@ -698,12 +675,8 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
         </div>
 
         <div class="panel" role="tabpanel" id="p-sf" aria-labelledby="t-sf" hidden>
-          <div class="panel-art">
-            <svg viewBox="0 0 300 220" aria-hidden="true">
-              <path class="art" d="M150 28 L220 56 V112 C220 158 188 186 150 198 C112 186 80 158 80 112 V56 Z"/>
-              <path class="art-dim" d="M150 48 L202 68 V112 C202 146 180 168 150 178 C120 168 98 146 98 112 V68 Z"/>
-              <path class="art-fill" d="M160 70 L128 122 H150 L140 160 L176 104 H152 Z"/>
-            </svg>
+          <div class="panel-art photo">
+            <img src="assets/cat-safety.jpg" alt="บอร์ดความปลอดภัย มีเซนเซอร์ PIR เครื่องตรวจจับควัน ไซเรน รีเลย์ และ ESP32" width="1200" height="848" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">PIR · SMOKE DETECT · SURGE PROTECTION</span>
           </div>
           <div class="panel-body">
@@ -720,15 +693,8 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
         </div>
 
         <div class="panel" role="tabpanel" id="p-pe" aria-labelledby="t-pe" hidden>
-          <div class="panel-art">
-            <svg viewBox="0 0 300 220" aria-hidden="true">
-              <path class="art-dim" d="M30 190 H280 M30 190 V30"/>
-              <path class="art" d="M30 170 C 60 170, 70 60, 100 60 S 130 170, 160 170 S 190 60, 220 60 S 250 170, 280 170" opacity=".45"/>
-              <path class="art" d="M30 120 H52 V60 H74 V180 H96 V60 H118 V180 H140 V60 H162 V180 H184 V60 H206 V180 H228 V60 H250 V120 H280"/>
-              <text x="36" y="44" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">PWM · f_sw = 20 kHz</text>
-              <rect x="196" y="22" width="84" height="22" class="art-fill" opacity=".85"/>
-              <text x="238" y="37" text-anchor="middle" fill="var(--on-copper)" font-family="IBM Plex Mono, monospace" font-size="10">η = 92.4%</text>
-            </svg>
+          <div class="panel-art photo">
+            <img src="assets/cat-power.jpg" alt="วงจร Buck/Boost Converter ทดสอบด้วยออสซิลโลสโคปและแหล่งจ่ายไฟ พร้อมผลจำลองบนโน้ตบุ๊ก" width="1200" height="848" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span>
             <span class="tagline">BUCK / BOOST · MATLAB / SIMULINK · PID</span>
           </div>
           <div class="panel-body">
@@ -857,7 +823,7 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div><a class="btn btn-copper" href="#contact">ขอใบเสนอราคา <span class="arrow">→</span></a></div>
         </div>
         <div class="inst-photos">
-          <figure><img src="assets/inst-lab.jpg" alt="นักศึกษาทดสอบชุดฝึก PLC พร้อมสายพานลำเลียงในห้องปฏิบัติการ" width="1600" height="710" loading="lazy" decoding="async"><figcaption>ชุดฝึก PLC และสายพานลำเลียงในห้องปฏิบัติการ</figcaption></figure>
+          <figure><img src="assets/inst-lab.jpg" alt="นักศึกษาทดสอบชุดฝึก PLC พร้อมสายพานลำเลียงในห้องปฏิบัติการ" width="1600" height="710" loading="lazy" decoding="async"><span class="ad-tag">ภาพประกอบเพื่อการโฆษณา</span><figcaption>ชุดฝึก PLC และสายพานลำเลียงในห้องปฏิบัติการ</figcaption></figure>
           <figure><img src="assets/inst-conveyor.jpg" alt="ชุดฝึกสายพานลำเลียงพร้อมตู้ควบคุม PLC และกล่องปุ่มกด" width="1000" height="750" loading="lazy" decoding="async"><figcaption>สายพาน + ตู้ควบคุม PLC</figcaption></figure>
           <figure><img src="assets/inst-trainer.jpg" alt="ชุดฝึกสายพานลำเลียงพร้อมเซนเซอร์และ PLC บนโครงยึด" width="1000" height="750" loading="lazy" decoding="async"><figcaption>สายพาน + เซนเซอร์ + PLC</figcaption></figure>
         </div>
