@@ -275,9 +275,14 @@ section { padding-block: clamp(72px, 10vw, 120px); }
 .inst-copy p { color: var(--muted); font-weight: 300; }
 .inst-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin: 8px 0 0; padding: 0; list-style: none; font-size: .95rem; }
 .inst-list li { padding-left: 16px; border-left: 1px solid var(--copper); }
-.inst-art { border-left: 1px solid var(--line); background: repeating-linear-gradient(0deg, transparent 0 39px, rgba(255,255,255,.025) 39px 40px), repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,.025) 39px 40px), radial-gradient(80% 80% at 70% 30%, var(--surface-2), var(--bg)); display: grid; place-items: center; padding: 32px; min-height: 320px; }
-.inst-art svg { width: min(100%, 340px); height: auto; }
-@media (max-width: 860px) { .inst { grid-template-columns: 1fr; } .inst-art { border-left: 0; border-top: 1px solid var(--line); } .inst-list { grid-template-columns: 1fr; } }
+.inst-photos { border-left: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.25fr 1fr; gap: 6px; padding: 6px; min-height: 460px; background: var(--bg); }
+.inst-photos figure { position: relative; margin: 0; overflow: hidden; min-height: 0; }
+.inst-photos figure:first-child { grid-column: 1 / -1; }
+.inst-photos img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+.inst-photos figure:hover img { transform: scale(1.04); }
+.inst-photos figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 14px 10px; font-size: .82rem; color: var(--ink); background: linear-gradient(transparent, rgba(11,16,21,.88)); }
+@media (max-width: 860px) { .inst { grid-template-columns: 1fr; } .inst-photos { border-left: 0; border-top: 1px solid var(--line); min-height: 0; grid-template-rows: auto auto; } .inst-photos figure:first-child { aspect-ratio: 16 / 8; } .inst-photos figure { aspect-ratio: 4 / 3; } .inst-photos figcaption { font-size: .72rem; padding: 16px 10px 8px; } .inst-list { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .inst-photos img { transition: none; } }
 
 /* works bento */
 .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 220px; gap: 16px; }
@@ -853,21 +858,10 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
           </ul>
           <div><a class="btn btn-copper" href="#contact">ขอใบเสนอราคา <span class="arrow">→</span></a></div>
         </div>
-        <div class="inst-art">
-          <svg viewBox="0 0 340 260" aria-hidden="true">
-            <rect x="20" y="20" width="300" height="200" rx="3" class="art"/>
-            <rect x="40" y="40" width="120" height="70" class="art-dim"/>
-            <text x="50" y="62" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">PLC FX3U</text>
-            <path class="art" d="M50 80h100M50 94h70"/>
-            <circle cx="200" cy="65" r="18" class="art"/><circle cx="250" cy="65" r="18" class="art"/><circle cx="300" cy="65" r="0" />
-            <path class="art" d="M200 52v13l8 6M250 52v13l-8 6"/>
-            <rect x="180" y="100" width="120" height="16" class="art-dim"/>
-            <path class="art" d="M40 140h260" stroke-dasharray="3 5"/>
-            <circle cx="60" cy="180" r="10" class="art-fill"/><circle cx="95" cy="180" r="10" class="art"/><circle cx="130" cy="180" r="10" class="art"/>
-            <rect x="170" y="166" width="130" height="28" class="art"/>
-            <path class="art" d="M182 180h20M212 180h20M242 180h20M272 180h16"/>
-            <path class="art-dim" d="M60 220v24M280 220v24"/>
-          </svg>
+        <div class="inst-photos">
+          <figure><img src="assets/inst-lab.jpg" alt="นักศึกษาทดสอบชุดฝึก PLC พร้อมสายพานลำเลียงในห้องปฏิบัติการ" width="1600" height="710" loading="lazy" decoding="async"><figcaption>ชุดฝึก PLC และสายพานลำเลียงในห้องปฏิบัติการ</figcaption></figure>
+          <figure><img src="assets/inst-conveyor.jpg" alt="ชุดฝึกสายพานลำเลียงพร้อมตู้ควบคุม PLC และกล่องปุ่มกด" width="1000" height="750" loading="lazy" decoding="async"><figcaption>สายพาน + ตู้ควบคุม PLC</figcaption></figure>
+          <figure><img src="assets/inst-trainer.jpg" alt="ชุดฝึกสายพานลำเลียงพร้อมเซนเซอร์และ PLC บนโครงยึด" width="1000" height="750" loading="lazy" decoding="async"><figcaption>สายพาน + เซนเซอร์ + PLC</figcaption></figure>
         </div>
       </div>
     </div>
