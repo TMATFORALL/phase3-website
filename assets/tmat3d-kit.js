@@ -3,13 +3,14 @@
 (function () {
   if (!window.THREE) return;
   var T = window.THREE;
+  var phone = window.matchMedia('(max-width: 900px)').matches;
 
   // Renderer settings and a soft studio environment so metal and plastic reflect light.
   function setup(renderer, scene) {
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.95;
-    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.enabled = !phone;
     renderer.shadowMap.type = T.PCFSoftShadowMap;
 
     var pm = new T.PMREMGenerator(renderer);
@@ -52,16 +53,19 @@
     var g = c.getContext('2d'); draw(g, wpx, hpx);
     var t = new T.CanvasTexture(c);
     if (color !== false) t.encoding = T.sRGBEncoding;
-    t.anisotropy = 8;
+    t.anisotropy = phone ? 2 : 8;
     return t;
   }
 
   // A printed sticker: background colour, lines of text.
+  var labelCache = {};
   function label(w, h, bg, fg, lines, opts) {
     opts = opts || {};
-    var px = 256, wpx = Math.round(px * w / h * 1.0) || 256;
-    wpx = Math.min(2048, Math.max(64, wpx));
-    return canvasTex(wpx, px, function (g, W, H) {
+    var key = JSON.stringify([w, h, bg, fg, lines, opts]);
+    if (labelCache[key]) return labelCache[key];
+    var px = phone ? 96 : 192, wpx = Math.round(px * w / h) || px;
+    wpx = Math.min(phone ? 512 : 1024, Math.max(32, wpx));
+    return labelCache[key] = canvasTex(wpx, px, function (g, W, H) {
       if (bg) { g.fillStyle = bg; g.fillRect(0, 0, W, H); }
       g.fillStyle = fg; g.textAlign = opts.align || 'center'; g.textBaseline = 'middle';
       var n = lines.length;
@@ -95,5 +99,5 @@
 
   function plane(w, h, mat) { return new T.Mesh(new T.PlaneGeometry(w, h), mat); }
 
-  window.TMAT3D = { setup: setup, rboxGeo: rboxGeo, canvasTex: canvasTex, label: label, noiseTex: noiseTex, plane: plane };
+  window.TMAT3D = { phone: phone, setup: setup, rboxGeo: rboxGeo, canvasTex: canvasTex, label: label, noiseTex: noiseTex, plane: plane };
 })();

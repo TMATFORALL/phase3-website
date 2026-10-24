@@ -13,12 +13,23 @@
   var stepTag = document.getElementById('pcb-step');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Build the scene only when the visitor scrolls near it, so a phone never
+  // holds both 3D scenes in memory before it needs them.
+  var booted = false;
+  function boot() { if (booted) return; booted = true; main(); }
+  if ('IntersectionObserver' in window) {
+    var near = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { near.disconnect(); boot(); } }, { rootMargin: '700px 0px' });
+    near.observe(stage);
+  } else { boot(); }
+
+  function main() {
+
   if (!window.THREE || !window.TMAT3D) { stage.classList.add('no3d'); return; }
   var K = window.TMAT3D;
   var renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); }
   catch (e) { stage.classList.add('no3d'); return; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 900px)').matches ? 1.5 : 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 900px)').matches ? 1.25 : 1.75));
 
   var scene = new THREE.Scene();
   K.setup(renderer, scene);
@@ -55,7 +66,7 @@
     var o = add(new THREE.PlaneGeometry(w, d), m, x, y, z, parent); o.rotation.x = -Math.PI / 2; o.castShadow = false; return o;
   }
 
-  var BW = 2.6, BD = 1.7, PX = 500;            // board size and texture resolution (px per unit)
+  var BW = 2.6, BD = 1.7, PX = K.phone ? 240 : 500;            // board size and texture resolution (px per unit)
   var CW = BW * PX, CH = BD * PX;
   function px(x) { return (x + BW / 2) * PX; }
   function pz(z) { return (z + BD / 2) * PX; }
@@ -396,4 +407,5 @@
     new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) { measure(); kick(); } }).observe(stage);
   } else { visible = true; }
   measure(); kick();
+  }
 })();

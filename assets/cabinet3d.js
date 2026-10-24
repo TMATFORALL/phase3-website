@@ -13,13 +13,24 @@
   var stepTag = document.getElementById('cab-step');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Build the scene only when the visitor scrolls near it, so a phone never
+  // holds both 3D scenes in memory before it needs them.
+  var booted = false;
+  function boot() { if (booted) return; booted = true; main(); }
+  if ('IntersectionObserver' in window) {
+    var near = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { near.disconnect(); boot(); } }, { rootMargin: '700px 0px' });
+    near.observe(stage);
+  } else { boot(); }
+
+  function main() {
+
   function fail() { stage.classList.add('no3d'); }
   if (!window.THREE || !window.TMAT3D) { fail(); return; }
   var K = window.TMAT3D;
   var renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); }
   catch (e) { fail(); return; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 900px)').matches ? 1.5 : 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 900px)').matches ? 1.25 : 1.75));
 
   var scene = new THREE.Scene();
   K.setup(renderer, scene);
@@ -78,10 +89,11 @@
     var o = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); o.position.set(x, y, z); parent.add(o); glowable.push(o); return o;
   }
   // slotted screw head facing +z (front) or +y (top)
+  var screwHead = new THREE.CylinderGeometry(0.024, 0.026, 0.014, 14), screwSlot = new THREE.BoxGeometry(0.036, 0.016, 0.006);
   function screw(x, y, z, parent, up) {
     var g = new THREE.Group(); g.position.set(x, y, z); parent.add(g);
-    var head = mesh(new THREE.CylinderGeometry(0.024, 0.026, 0.014, 18), mat.zinc, 0, 0, 0, g);
-    var slot = mesh(new THREE.BoxGeometry(0.036, 0.016, 0.006), mat.dark, 0, 0.002, 0, g);
+    mesh(screwHead, mat.zinc, 0, 0, 0, g, true);
+    mesh(screwSlot, mat.dark, 0, 0.002, 0, g, true);
     if (!up) { g.rotation.x = Math.PI / 2; }
     return g;
   }
@@ -405,4 +417,5 @@
     new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) { measure(); kick(); } }).observe(stage);
   } else { visible = true; }
   measure(); kick();
+  }
 })();
