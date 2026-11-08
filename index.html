@@ -72,6 +72,23 @@ nav a { text-decoration: none; font-size: .93rem; color: var(--muted); transitio
 nav a:hover { color: var(--ink); }
 header .btn { padding: 10px 18px; font-size: .92rem; }
 @media (max-width: 880px) { nav { display: none; } }
+/* phone menu */
+.menu-btn { display: none; }
+@media (max-width: 880px) {
+  header .rail { gap: 12px; }
+  header .btn-copper { margin-left: auto; }
+  .menu-btn { all: unset; box-sizing: border-box; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); cursor: pointer; flex: none; }
+  .menu-btn:focus-visible { outline: 2px solid var(--copper-hi); outline-offset: 2px; }
+  .menu-btn span, .menu-btn span::before, .menu-btn span::after { display: block; width: 18px; height: 1.5px; background: var(--ink); position: relative; transition: transform .2s, background .2s; }
+  .menu-btn span::before, .menu-btn span::after { content: ""; position: absolute; left: 0; }
+  .menu-btn span::before { top: -6px; } .menu-btn span::after { top: 6px; }
+  .menu-btn[aria-expanded="true"] span { background: transparent; }
+  .menu-btn[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
+  #site-nav.open { display: flex; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: rgba(11,16,21,.97); border-bottom: 1px solid var(--line); padding: 6px max(20px, env(safe-area-inset-right, 0px)) 14px max(20px, env(safe-area-inset-left, 0px)); max-height: calc(100svh - 70px); overflow-y: auto; }
+  #site-nav.open a { padding: 14px 0; font-size: 1.02rem; color: var(--ink); border-bottom: 1px solid var(--line); }
+  #site-nav.open a:last-child { border-bottom: 0; }
+}
 
 /* hero */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
@@ -362,7 +379,7 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <img class="brand-logo" src="assets/logo-dark.png" alt="TMAT" width="144" height="36">
       <small class="brand-sub">ELECTRICAL<br>PROJECT STUDIO</small>
     </a>
-    <nav aria-label="เมนูหลัก">
+    <nav id="site-nav" aria-label="เมนูหลัก">
       <a href="#levels">ระดับ</a>
       <a href="#projects">โปรเจค</a>
       <a href="#process">ขั้นตอน</a>
@@ -372,6 +389,7 @@ footer .rail { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <a href="learn.html">คลังความรู้</a>
     </nav>
     <a class="btn btn-copper" href="#contact">ปรึกษาฟรี</a>
+    <button class="menu-btn" id="menu-btn" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="เปิดเมนู"><span></span></button>
   </div>
 </header>
 
@@ -1030,5 +1048,18 @@ document.querySelectorAll('.pkg').forEach(function (card) {
 <script src="assets/tmat3d-kit.js"></script>
 <script src="assets/cabinet3d.js"></script>
 <script src="assets/pcb3d.js"></script>
+<script>
+/* phone menu */
+(function () {
+  var btn = document.getElementById('menu-btn'), nav = document.getElementById('site-nav');
+  if (!btn || !nav) return;
+  function set(open) { nav.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'ปิดเมนู' : 'เปิดเมนู'); }
+  btn.addEventListener('click', function () { set(!nav.classList.contains('open')); });
+  nav.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) { set(false); btn.focus(); } });
+  document.addEventListener('click', function (e) { if (nav.classList.contains('open') && !e.target.closest('header')) set(false); });
+  window.matchMedia('(min-width: 881px)').addEventListener('change', function (m) { if (m.matches) set(false); });
+})();
+</script>
 </body>
 </html>
