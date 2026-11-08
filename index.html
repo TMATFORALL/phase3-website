@@ -34,7 +34,7 @@
   --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.7; font-weight: 400; }
 .rail { max-width: 1200px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
@@ -154,8 +154,11 @@ section { padding-block: clamp(72px, 10vw, 120px); }
   .istep > div { height: 100%; background: var(--bg-2); border: 1px solid var(--line); padding: 20px; display: grid; gap: 12px; align-content: start; }
   .istep.active > div { border-color: var(--copper-lo); }
   .swipe-dots { display: flex; justify-content: center; gap: 8px; margin-top: 4px; }
-  .swipe-dots button { all: unset; width: 8px; height: 8px; border-radius: 50%; background: var(--line); cursor: pointer; }
-  .swipe-dots button[aria-current="true"] { background: var(--copper); width: 22px; border-radius: 4px; }
+  .swipe-dots { gap: 0; }
+  .swipe-dots button { all: unset; display: grid; place-items: center; min-width: 28px; height: 36px; padding: 0 2px; cursor: pointer; }
+  .swipe-dots button::before { content: ""; width: 8px; height: 8px; border-radius: 4px; background: var(--line); transition: width .2s; }
+  .swipe-dots button[aria-current="true"]::before { width: 22px; background: var(--copper); }
+  .swipe-dots button:focus-visible { outline: 2px solid var(--copper-hi); }
   .cab-label { font-size: .7rem; padding: 3px 8px; }
 }
 @media (min-width: 901px) { .swipe-dots { display: none; } }
